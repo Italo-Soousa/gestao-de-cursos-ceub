@@ -4,16 +4,11 @@ import tkinter as tk
 class LoginUsuario:
     def __init__(self):
 
-        # Configurar a janela principal
+        # Cnfiguração da janela principal
         self.janela = tk.Tk()
         self.janela.title('Login Usuário')
-        self.janela.geometry("300x350")
+        self.janela.geometry('300x200')
         self.janela.resizable(False, False)
-
-        # Círculo no topo
-        self.canvas = tk.Canvas(self.janela, width=80, height=80, highlightthickness=0)
-        self.canvas.create_oval(10, 10, 70, 70, fill="#6d6d6d", outline="")  # Cor cinza para o círculo
-        self.canvas.pack(pady=(30, 10))  # Espaçamento no topo
 
         # Label "Login"
         label_login = tk.Label(self.janela, text="LOGIN", font=("Arial", 10, "bold"))
@@ -28,8 +23,13 @@ class LoginUsuario:
         self.term2.pack(pady=(0, 20))  # Espaçamento abaixo do campo
 
         # Botão de Login
-        btn_login = tk.Button(self.janela, text="Entrar", width=15, font=("Arial", 10, "bold"))
+        btn_login = tk.Button(self.janela, text="Entrar", width=15, command=botaoLogin, font=("Arial", 10, "bold"))
         btn_login.pack(pady=(10, 0))  # Espaçamento abaixo do botão
+
+        def botaoLogin(self):
+            self.janela
+
+
 
     def run(self):
         self.janela.mainloop()
