@@ -1,10 +1,14 @@
 import tkinter as tk
 from tkinter import Label
+import info
+import editar
+import criar
+from guias.criar import Criar
 
 #---------------------------------------------------------------------------------------------------------------------
 #variaveis
 #---------------------------------------------------------------------------------------------------------------------
-curso_selecionado = ''
+curso_selecionado = ""
 cor0= '#1C1C1C'
 cor1= '#363636'
 texto= '#DCDCDC'
@@ -55,16 +59,17 @@ config_text_box = {
 #memoriza o curso selecionado
 #---------------------------------------------------------------------------------------------------------------------
 def salvar_curso(nome):
+    global curso_selecionado
     curso_selecionado = nome
     texto_informativo = tk.Label(
         JGC,
-        text=f"Curso selecionado: {curso_selecionado}",
-        font=("Arial", 13, "bold"),  # Texto em negrito
-        fg=texto,  # Cor do texto
-        bg=cor0,  # Fundo correspondente ao fundo da janela
+        text=f"Curso selecionado: {nome}",
+        font=("Arial", 13, "bold"),
+        fg=texto,
+        bg=cor0,
     )
     texto_informativo.place(x=145, y=43)
-    print(f"Curso selecionado: {curso_selecionado}")
+    print(f"Curso selecionado: {nome}")
 #---------------------------------------------------------------------------------------------------------------------
 #rolagem para o Canva
 #---------------------------------------------------------------------------------------------------------------------
@@ -113,27 +118,34 @@ def gerar_botoes(canvas, termo_pesquisa=""):
 #---------------------------------------------------------------------------------------------------------------------
 #QUANDO APERTAR (ENTER) NA CAIXA DE PESQUISA
 #---------------------------------------------------------------------------------------------------------------------
-def pesquisar(event, canvas):
-    termo = pesquisa_var.get()  # Obtém o texto da caixa de pesquisa
-    gerar_botoes(canvas, termo)  # Atualiza os botões de curso com base no termo de pesquisa
+def pesquisar(canvas):
+    # Obtém o texto da caixa de pesquisa
+    termo = pesquisa_var.get()
+    # Atualiza os botões de curso com base no termo de pesquisa
+    gerar_botoes(canvas, termo)
 #---------------------------------------------------------------------------------------------------------------------
 #Janela de informações do curso
 #---------------------------------------------------------------------------------------------------------------------
-def info_curso():
+def info_curso(nome):
+    if nome != '':
+        info.Info(cor0, texto, nome)
+    else:
+        print("Nenhum curso foi selecionado!")
 
-    print(f"abriua janela de curso")
 #---------------------------------------------------------------------------------------------------------------------
 #Janela criar
 #---------------------------------------------------------------------------------------------------------------------
 def j_criar():
-
+    criar.Criar(cor0,texto,cor3)
     print(f"abriua janela de criar")
 #---------------------------------------------------------------------------------------------------------------------
-#Janela editar
+#Janela criar
 #---------------------------------------------------------------------------------------------------------------------
-def j_editar():
-
-    print(f"abriua janela de editar")
+def j_editar(nome):
+    if nome != '':
+        editar.Editar(cor0,texto,nome,cor3)
+    else:
+        print("Nenhum curso foi selecionado!")
 #---------------------------------------------------------------------------------------------------------------------
 #tela de login
 #---------------------------------------------------------------------------------------------------------------------
@@ -162,16 +174,16 @@ canvas.place(x=145, y=75)
 canvas.bind_all("<MouseWheel>", lambda event, canvas=canvas: rolar_canvas(event, canvas))
 
 #botoes do menu
-botao_Info = tk.Button(JGC, text="Info", **config_botao, command=info_curso)
+botao_Info = tk.Button(JGC, text="Info", **config_botao, command=lambda: info_curso(curso_selecionado))
 menu.create_window(55, 63, window=botao_Info)
 
-botao_Criar = tk.Button(JGC, text="Criar Curso", **config_botao, command=j_criar)
+botao_Criar = tk.Button(JGC, text="Criar Curso", **config_botao, command= j_criar)
 menu.create_window(55, 135, window=botao_Criar)
 
-botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=j_editar)
+botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=lambda: j_editar(curso_selecionado))
 menu.create_window(55, 206, window=botao_Editar)
 
-botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=sair)
+botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair)
 menu.create_window(55, 276, window=botao_Sair)
 
 # Gerar os botões para os cursos
@@ -181,17 +193,16 @@ gerar_botoes(canvas)
 pesquisa_var = tk.StringVar()
 pesquisa = tk.Entry(JGC, textvariable=pesquisa_var, **config_text_box)
 pesquisa.place(x=145, y=15)
-
 texto_informativo: Label = tk.Label(
         JGC,
         text=f"Cursos:",
-        font=("Arial", 13, "bold"),  # Texto em negrito
-        fg=texto,  # Cor do texto
-        bg=cor0,  # Fundo correspondente ao fundo da janela
+        font=("Arial", 13, "bold"),
+        fg=texto,
+        bg=cor0,
     )
 texto_informativo.place(x=145, y=43)
+
 # Monitorar a barra de pesquisa e atualizar os botões quando o usuário digitar
 pesquisa.bind("<KeyRelease>", lambda event, canvas=canvas: pesquisar(event, canvas))
-
 
 JGC.mainloop()
