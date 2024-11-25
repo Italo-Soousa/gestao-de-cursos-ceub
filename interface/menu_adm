@@ -108,7 +108,7 @@ def pesquisar(event, canvas):
     termo = pesquisa_var.get()  # Obtém o texto da caixa de pesquisa
     gerar_botoes(canvas, termo)  # Atualiza os botões de curso com base no termo de pesquisa
 #---------------------------------------------------------------------------------------------------------------------
-#Janela do curso
+#Janela de informações do curso
 #---------------------------------------------------------------------------------------------------------------------
 def info_curso():
 
@@ -148,11 +148,14 @@ canvas.place(x=140, y=70)
 canvas.bind_all("<MouseWheel>", lambda event, canvas=canvas: rolar_canvas(event, canvas))
 
 #botoes do menu
+botao_Info = tk.Button(JGC, text="Info", **config_botao, command=info_curso)
+menu.create_window(55, 25, window=botao_Info)
+
 botao_Criar = tk.Button(JGC, text="Criar Curso", **config_botao, command=j_criar)
-menu.create_window(55, 25, window=botao_Criar)
+menu.create_window(55, 60, window=botao_Criar)
 
 botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=j_editar)
-menu.create_window(55, 60, window=botao_Editar)
+menu.create_window(55, 95, window=botao_Editar)
 
 # Gerar os botões para os cursos
 gerar_botoes(canvas)
