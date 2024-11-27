@@ -1,10 +1,14 @@
 import mysql.connector
 
-class SQL:
-    def __init__(self, servidor='localhost', user='root', password='ceub123', esquema='test'):
-        self.conexao = mysql.connector.connect(host=servidor, user=user, password=password, database=esquema)
-
-        cursor = self.conexao.cursor()
-
-        cursor.close()
-        self.conexao.close()
+def conexaoBanco():
+    try:
+        conexao = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='Brazil123',
+            database='bd_gestaoCursos'
+        )
+        return conexao
+    except mysql.connector.Error as e: # Error aponta o erro no terminal que passa para a variável
+        print(f"Erro ao conectar ao banco de dados: {e}")
+        return None
