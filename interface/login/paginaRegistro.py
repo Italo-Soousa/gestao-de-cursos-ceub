@@ -4,6 +4,9 @@ from util.db import conexaoBanco  # Importa a função de conexão
 
 
 def abrirPaginaRegistro():
+
+
+
     # Cria uma nova janela para a página de registro
     pagina_registro = tk.Toplevel()
     pagina_registro.title("Página de Registro")
@@ -34,6 +37,12 @@ def abrirPaginaRegistro():
     PegandoSenha = tk.Entry(pagina_registro, width=25, justify="center", font=("Arial", 12), show="*")
     PegandoSenha.pack(pady=(0, 20))
 
+    # Label "Tipo de Usuário"
+    senha = tk.Label(pagina_registro, text="TIPO USUÁRIO", font=("Arial", 10, "bold"))
+    senha.pack(pady=(10, 5))
+    PaginaTipoUsuario = tk.Entry(pagina_registro, width=25, justify="center", font=("Arial", 12))
+    PaginaTipoUsuario.pack(pady=(0, 20))
+
     # Função para salvar os dados no banco de dados
     def salvarDados():
         # Obtém os valores dos campos
@@ -41,6 +50,7 @@ def abrirPaginaRegistro():
         email_valor = PegandoEmail.get()
         login_valor = PegandoLogin.get()
         senha_valor = PegandoSenha.get()
+        tipoUsuario_valor = PaginaTipoUsuario.get()
 
         # Valida se todos os campos estão preenchidos
         if not nome_valor or not email_valor or not login_valor or not senha_valor:
@@ -55,9 +65,9 @@ def abrirPaginaRegistro():
 
                 # Insere os dados na tabela "usuarios"
                 cursor.execute("""
-                    INSERT INTO usuarios (nome, email, login, senha) 
-                    VALUES (%s, %s, %s, %s)
-                """, (nome_valor, email_valor, login_valor, senha_valor))
+                    INSERT INTO usuarios (nome, email, login, senha, tipo_usuario) 
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (nome_valor, email_valor, login_valor, senha_valor, tipoUsuario_valor))
 
                 # Confirma as alterações no banco
                 conexao.commit()

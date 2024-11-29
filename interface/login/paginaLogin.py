@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 from paginaRegistro import abrirPaginaRegistro
+from util.db import conexaoBanco  # Importa a função de conexão
 
 def LoginUsuario():
-    # Função para validar a senha antes de acessar a página de registro registro
+    # Função para validar a senha antes de acessar a página de registro
     def solicitarSenha():
         senha_admin = simpledialog.askstring(
             "Senha Requerida", "Digite a senha de administrador para continuar:", show="*"
@@ -32,12 +33,57 @@ def LoginUsuario():
     term2 = tk.Entry(janela, width=25, justify="center", font=("Arial", 12), show="*")
     term2.pack(pady=(0, 20))  # Espaçamento abaixo do campo
 
-    # Frame para os botões (espaço na janela para os botões ficarem um do lado do outro)
+    def abrirPaginaAluno():
+        aluno_window = tk.Tk()
+        aluno_window.title("Página do Aluno")
+        tk.Label(aluno_window, text="Bem-vindo à página do Aluno!").pack()
+        aluno_window.mainloop()
+
+    def loginUsuario():
+        usuario = term1.get()
+        senha = term2.get()
+
+        # Conectar ao banco de dados
+        conexao = conexaoBanco()
+        cursor = conexao.cursor()
+
+        try:
+            # Consulta SQL para validar login e obter tipo de usuário
+            cursor.execute(
+                "SELECT tipo_usuario FROM usuarios WHERE login = %s AND senha = %s",
+                (usuario, senha)
+            )
+            resultado = cursor.fetchone()  # Retorna a primeira linha encontrada
+
+            if resultado:
+                tipo_usuario = resultado[0]  # Pega o valor de 'tipo_usuario'
+                messagebox.showinfo("Login Bem-Sucedido", f"Bem-vindo, {usuario}!")
+
+                # Fecha a janela de login
+                janela.destroy()
+
+                # Redireciona com base no tipo de usuário
+                if tipo_usuario == "administrador":
+                    print("função para abrir a página de administrador")
+                elif tipo_usuario == "aluno":
+                    abrirPaginaAluno()
+                else:
+                    messagebox.showerror("Erro", "Tipo de usuário desconhecido.")
+            else:
+                messagebox.showerror("Erro de Login", "Usuário ou senha incorretos. Tente novamente.")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao conectar ao banco: {e}")
+        finally:
+            # Fechar conexão com o banco
+            cursor.close()
+            conexao.close()
+
+    # Frame para os botões
     button_frame = tk.Frame(janela)
     button_frame.pack(pady=(10, 0))  # Espaçamento acima do frame dos botões
 
     # Botão de Login
-    btn_login = tk.Button(button_frame, text="Entrar", width=12, font=("Arial", 10, "bold"))
+    btn_login = tk.Button(button_frame, text="Entrar", width=12, font=("Arial", 10, "bold"), command=loginUsuario)
     btn_login.pack(side="left", padx=5)  # Espaçamento lateral
 
     # Botão de Registro com validação de senha
