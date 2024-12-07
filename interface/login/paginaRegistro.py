@@ -10,7 +10,7 @@ def abrirPaginaRegistro():
     # Cria uma nova janela para a página de registro
     pagina_registro = tk.Toplevel()
     pagina_registro.title("Página de Registro")
-    pagina_registro.geometry("300x400")
+    pagina_registro.geometry("300x430")
     pagina_registro.resizable(False, False)
 
     # Label "Nome"

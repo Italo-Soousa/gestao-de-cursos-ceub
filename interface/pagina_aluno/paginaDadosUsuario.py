@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from util.db import conexaoBanco  # Importa a função de conexão com o banco de dados
-
+from util.db import conexaoBanco
 
 def abrir_dados_usuario(user_id):
     """
@@ -12,7 +11,7 @@ def abrir_dados_usuario(user_id):
     janela_usuario = tk.Toplevel()
     janela_usuario.title("Seus Dados")
     janela_usuario.geometry("400x300")
-    janela_usuario.configure(bg="#F0F0F0")
+    janela_usuario.resizable(False, False)
 
     try:
         # Conectar ao banco de dados
@@ -29,16 +28,11 @@ def abrir_dados_usuario(user_id):
             # Exibir os dados do usuário
             tk.Label(janela_usuario, text="Seus Dados", font=("Arial", 16, "bold")).pack(pady=10)
 
-            tk.Label(janela_usuario, text=f"Nome: {nome}", font=("Arial", 12)).pack(anchor="w", padx=20,
-                                                                                                  pady=5)
-            tk.Label(janela_usuario, text=f"Email: {email}", font=("Arial", 12)).pack(anchor="w", padx=20,
-                                                                                                    pady=5)
-            tk.Label(janela_usuario, text=f"Login: {login}", font=("Arial", 12)).pack(anchor="w", padx=20,
-                                                                                                    pady=5)
-            tk.Label(janela_usuario, text=f"Senha: {senha}", font=("Arial", 12)).pack(anchor="w", padx=20,
-                                                                                                    pady=5)
-            tk.Label(janela_usuario, text=f"Tipo de Usuário: {tipo_usuario}", font=("Arial", 12)).pack(
-                anchor="w", padx=20, pady=5)
+            tk.Label(janela_usuario, text=f"Nome: {nome}", font=("Arial", 12)).pack(anchor="w", padx=20, pady=5)
+            tk.Label(janela_usuario, text=f"Email: {email}", font=("Arial", 12)).pack(anchor="w", padx=20, pady=5)
+            tk.Label(janela_usuario, text=f"Login: {login}", font=("Arial", 12)).pack(anchor="w", padx=20, pady=5)
+            tk.Label(janela_usuario, text=f"Senha: {senha}", font=("Arial", 12)).pack(anchor="w", padx=20, pady=5)
+            tk.Label(janela_usuario, text=f"Tipo de Usuário: {tipo_usuario}", font=("Arial", 12)).pack(anchor="w", padx=20, pady=5)
         else:
             messagebox.showerror("Erro", "Usuário não encontrado!")
             janela_usuario.destroy()
