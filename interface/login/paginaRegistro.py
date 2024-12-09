@@ -65,7 +65,7 @@ def abrirPaginaRegistro():
 
                 # Insere os dados na tabela "usuarios"
                 cursor.execute("""
-                    INSERT INTO usuarios (nome, email, login, senha, tipo_usuario) 
+                    INSERT INTO perfis (nome, email, login, senha, tipo_usuario) 
                     VALUES (%s, %s, %s, %s, %s)
                 """, (nome_valor, email_valor, login_valor, senha_valor, tipoUsuario_valor))
 

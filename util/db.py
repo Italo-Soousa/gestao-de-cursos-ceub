@@ -3,8 +3,9 @@ import mysql.connector
 def conexaoBanco():
     try:
         conexao = mysql.connector.connect(
-            host='localhost',
-            user='root',
+            host='179.48.44.35',
+            port=3306,
+            user='caio',
             password='Brazil123',
             database='bd_gestaoCursos'
         )

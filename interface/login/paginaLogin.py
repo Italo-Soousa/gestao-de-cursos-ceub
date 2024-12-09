@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+from interface.login.pagina_adm import menu_adm
 from paginaRegistro import abrirPaginaRegistro
 from util.db import conexaoBanco  # Importa a função de conexão
-
 def LoginUsuario():
     # Função para validar a senha antes de acessar a página de registro
     def solicitarSenha():
@@ -50,7 +50,7 @@ def LoginUsuario():
         try:
             # Consulta SQL para validar login e obter tipo de usuário
             cursor.execute(
-                "SELECT tipo_usuario FROM usuarios WHERE login = %s AND senha = %s",
+                "SELECT tipo_usuario FROM perfis WHERE login = %s AND senha = %s",
                 (usuario, senha)
             )
             resultado = cursor.fetchone()  # Retorna a primeira linha encontrada
@@ -64,7 +64,7 @@ def LoginUsuario():
 
                 # Redireciona com base no tipo de usuário
                 if tipo_usuario == "administrador":
-                    print("função para abrir a página de administrador")
+                    menu_adm.iniciar()
                 elif tipo_usuario == "aluno":
                     abrirPaginaAluno()
                 else:
