@@ -1,9 +1,39 @@
 import tkinter as tk
 from tkinter import ttk, PhotoImage, messagebox
-from util.db import conexaoBanco  # Certifique-se de ter a classe SQL configurada
+from util.db import conexaoBanco
 from paginaDadosUsuario import abrir_dados_usuario
-from paginaCurso import abrir_pagina_curso  # Função no outro arquivo que abrirá a página do curso
+from paginaCurso import abrir_pagina_curso
+from paginaMeusCursos import abrir_pagina_meus_cursos
+from Compartilhado import inscricoes
 
+
+def inscrever_curso(tree):
+    """
+    Inscreve o curso selecionado no Treeview principal.
+    """
+    try:
+        # Obter o item selecionado
+        item_selecionado = tree.selection()
+
+        if not item_selecionado:
+            messagebox.showwarning("Nenhum Curso Selecionado", "Por favor, selecione um curso para se inscrever.")
+            return
+
+        # Extrair os valores do curso selecionado
+        valores = tree.item(item_selecionado, 'values')
+        curso_id, titulo, carga_horaria, disponibilidade = valores
+
+        # Validar se o curso já foi inscrito
+        if any(inscrito[0] == curso_id for inscrito in inscricoes):
+            messagebox.showinfo("Curso já Inscrito", "Você já está inscrito nesse curso.")
+            return
+
+        # Adicionar o curso à lista de inscrições
+        inscricoes.append((curso_id, titulo, carga_horaria, disponibilidade))
+        messagebox.showinfo("Inscrição Realizada", f"Você se inscreveu no curso: {titulo}")
+
+    except Exception as e:
+        messagebox.showerror("Erro ao Inscrever", f"Ocorreu um erro ao se inscrever no curso.\n\n{e}")
 
 def abrir_curso_selecionado(tree):
     try:
@@ -134,7 +164,7 @@ titulo = tk.Label(top_frame, text="Gestão de Cursos Monitoria", font='Helvetica
 titulo.grid(row=0, column=2, padx=20, sticky="ew")  # Expansível horizontalmente
 
 # Botão Nome do usuário (na direita do grid)
-botao_usuario = tk.Button(top_frame, text="Nome do usuário", font=("Arial", 12), command=lambda: abrir_dados_usuario(1))
+botao_usuario = tk.Button(top_frame, text="Nome do usuário", font=("Arial", 12), command=lambda: abrir_dados_usuario())
 botao_usuario.grid(row=0, column=4, padx=20, sticky="e")  # Alinhado à direita
 
 # Barra lateral
@@ -149,8 +179,8 @@ btn_home.pack(pady=10, padx=10, fill="x")
 separator = tk.Frame(sidebar, height=2, bg="white")
 separator.pack(fill="x", pady=10, padx=10)  # Adiciona margens laterais de 20px
 
-# Botão de meus cursos
-btn_meus_cursos = tk.Button(sidebar, text="Meus Cursos", font=("Arial", 10, "bold"), relief="flat")
+# Adicionar botão na barra lateral para abrir Meus Cursos
+btn_meus_cursos = tk.Button(sidebar, text="Meus Cursos", font=("Arial", 10, "bold"), relief="flat", command=lambda: abrir_pagina_meus_cursos())
 btn_meus_cursos.pack(pady=10, padx=10, fill="x")
 
 # Botão de descobrir
@@ -192,9 +222,10 @@ def criar_treeview(parent):
     tree.column("Disponivel", width=100)
     tree.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
 
+
     # Botões de operação
-    bt_incluir = tk.Button(parent, text="Inscrever", command=lambda: InscreverCurso())
-    bt_incluir.grid(row=2, column=0, padx=10, pady=10)
+    bbt_incluir = tk.Button(content_area, text="Inscrever", command=lambda: inscrever_curso(tree))
+    bbt_incluir.grid(row=2, column=0, padx=10, pady=10)
 
     bt_abrir = tk.Button(parent, text="Abrir", command=lambda: abrir_curso(tree))
     bt_abrir.grid(row=2, column=2, padx=10, pady=10)
