@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Label
+from util.db import conexaoBanco
 from interface.login.pagina_adm.menus_adm import info
 from interface.login.pagina_adm.menus_adm import editar
 from interface.login.pagina_adm.menus_adm import criar
@@ -10,13 +11,6 @@ cor0 = '#1C1C1C'
 cor1 = '#363636'
 texto = '#DCDCDC'
 cor3 = '#4F4F4F'
-
-# test
-cursos = [
-    "Curso 1", "Curso 2", "Curso 3", "Curso 4", "Curso 5",
-    "Curso 6", "Curso 7", "Curso 8", "Curso 9", "Curso 10",
-    "Curso 11", "Curso 12", "Curso 13", "Curso 14", "Curso 15",
-]
 
 # config botoes
 config_botao = {
@@ -80,53 +74,68 @@ def gerar_botoes(canvas, termo_pesquisa=""):
     espaco_x = 150
     espaco_y = 100
 
-    # Filtrar os cursos com base no termo de pesquisa
-    cursos_filtrados = [curso for curso in cursos if termo_pesquisa.lower() in curso.lower()]
+    try:
+        # Conecta ao banco usando o util.db
+        conexao = conexaoBanco()
+        if conexao:
+            cursor = conexao.cursor()
 
-    for i, curso in enumerate(cursos_filtrados):
-        # Calcular posição (x, y) baseado no índice
-        linha = i // colunas
-        coluna = i % colunas
+            # Insere os dados na tabela "usuarios"
+            cursor.execute("SELECT nome FROM curso")
+            resultados = cursor.fetchall()
 
-        # Calcular a posição (x, y) para o botão
-        x = margem_x + (coluna * espaco_x)
-        y = margem_y + (linha * espaco_y)
+            # Filtrar os cursos com base no termo de pesquisa
+            cursos_filtrados = [curso[0] for curso in resultados if termo_pesquisa.lower() in curso[0].lower()]
 
-        # Criar o botão com o nome do curso
-        botao = tk.Button(canvas, text=curso, **config_botao_cursos, command=lambda nome=curso: salvar_curso(nome))
-        canvas.create_window(x, y, window=botao)
+            # Quantidade de linhas necessárias
+            linhas = (len(cursos_filtrados) + colunas - 1) // colunas  # Arredonda para cima
 
-        # Adicionar o nome do curso abaixo do botão
-        canvas.create_text(x, y + 50, text=curso, fill=texto,
-                           font=("Arial", 8, "bold"))
+            # Calcular a altura total necessária
+            altura_total = margem_y + (linhas * espaco_y)
 
+            for i, curso in enumerate(cursos_filtrados):
+                # Calcular posição (x, y) baseado no índice
+                linha = i // colunas
+                coluna = i % colunas
+
+                # Calcular a posição (x, y) para o botão
+                x = margem_x + (coluna * espaco_x)
+                y = margem_y + (linha * espaco_y)
+
+                # Criar o botão com o nome do curso
+                botao = tk.Button(canvas, text=curso, **config_botao_cursos,
+                                  command=lambda nome=curso: salvar_curso(nome))
+                canvas.create_window(x, y, window=botao)
+
+            # Ajustar a região de rolagem do canvas
+            canvas.config(scrollregion=(0, 0, canvas.winfo_width(), altura_total))
+            # Fecha a conexão e o cursor
+            cursor.close()
+            conexao.close()
+        else:
+            print("Erro", "Não foi possível conectar ao banco de dados.")
+    except Exception as e:
+        print("Erro", f"Ocorreu um erro ao salvar: {e}")
 
 # QUANDO APERTAR (ENTER) NA CAIXA DE PESQUISA
-def pesquisar(canvas, pesquisa_var=None):
-    # Obtém o texto da caixa de pesquisa
+def pesquisar(event, canvas, pesquisa_var=None):
     termo = pesquisa_var.get()
-    # Atualiza os botões de curso com base no termo de pesquisa
     gerar_botoes(canvas, termo)
 
 
-# Janela de informações do curso
 def info_curso():
-    if curso_selecionado != '':
-        info.Info(cor0, texto, curso_selecionado)  # Usando a variável global
+    if curso_selecionado:
+        info.Info(cor0, texto, curso_selecionado)
     else:
         print("Nenhum curso foi selecionado!")
 
-
-# Janela criar
 def j_criar():
     criar.Criar(cor0, texto, cor3)
-    print(f"abriua janela de criar")
-
 
 # Janela criar
 def j_editar():
-    if curso_selecionado != '':
-        editar.Editar(cor0, texto, curso_selecionado, cor3)  # Usando a variável global
+    if curso_selecionado:
+        editar.Editar(cor0, texto, curso_selecionado, cor3)
     else:
         print("Nenhum curso foi selecionado!")
 
@@ -137,9 +146,6 @@ def sair():
 
 
 def iniciar():
-    # janela Gestão de Cursos UNI-CEUB
-    # configuraçoes da janela
-
     JGC = tk.Tk()
     JGC.title("Gestão de Cursos UNI-CEUB")
     JGC.geometry("600x350")
@@ -155,7 +161,7 @@ def iniciar():
     canvas.place(x=145, y=75)
 
     # Adicionando o evento de rolagem no local dos cursos
-    canvas.bind_all("<MouseWheel>", lambda event, canvas=canvas: rolar_canvas(event, canvas))
+    canvas.bind_all("<MouseWheel>", lambda event: rolar_canvas(event, canvas))
 
     # botoes do menu
     botao_Info = tk.Button(JGC, text="Info", **config_botao, command=lambda: info_curso())
@@ -170,23 +176,19 @@ def iniciar():
     botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair)
     menu.create_window(55, 276, window=botao_Sair)
 
-    # Gerar os botões para os cursos
-    gerar_botoes(canvas)
+
 
     # Caixa de pesquisa
     pesquisa_var = tk.StringVar()
     pesquisa = tk.Entry(JGC, textvariable=pesquisa_var, **config_text_box)
     pesquisa.place(x=145, y=15)
-    texto_informativo: Label = tk.Label(
-        JGC,
-        text=f"Cursos:",
-        font=("Arial", 13, "bold"),
-        fg=texto,
-        bg=cor0,
-    )
+
+    texto_informativo = Label(JGC, text="Cursos:", font=("Arial", 13, "bold"), fg=texto, bg=cor0)
     texto_informativo.place(x=145, y=43)
 
     # Monitorar a barra de pesquisa e atualizar os botões quando o usuário digitar
-    pesquisa.bind("<KeyRelease>", lambda event, canvas=canvas: pesquisar(event, canvas))
+    pesquisa.bind("<KeyRelease>", lambda event: pesquisar(event, canvas, pesquisa_var))
 
+    # Gerar os botões para os cursos
+    gerar_botoes(canvas)
     JGC.mainloop()
