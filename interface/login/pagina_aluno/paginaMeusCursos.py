@@ -4,7 +4,7 @@ from util.db import conexaoBanco  # Certifique-se de ter a classe SQL configurad
 from paginaDadosUsuario import abrir_dados_usuario
 from Compartilhado import inscricoes
 from paginaCurso import abrir_pagina_curso
-
+import os
 
 def abrir_pagina_meus_cursos():
 
@@ -79,7 +79,9 @@ def abrir_pagina_meus_cursos():
     top_frame.grid_columnconfigure(4, weight=1)  # Espaço após o botão
 
     # Imagem CEUB (na parte esquerda do grid)
-    logo_img = PhotoImage(file="/Users/italosousa/Desktop/Projeto Faculdade/interface/imagens/uniceub.png")
+    diretorio_atual = os.path.dirname(__file__)
+    caminho_imagem = os.path.join(diretorio_atual, "..", "..", "imagens", "uniceub.png")
+    logo_img = PhotoImage(file=caminho_imagem)
     logo_label = tk.Label(top_frame, image=logo_img)
     logo_label.grid(row=0, column=0, padx=10, sticky="w")  # Alinhado à esquerda
 
