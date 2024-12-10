@@ -1,7 +1,7 @@
 import tkinter as tk
 from util.db import conexaoBanco
 
-def Info(cor0, texto, nome):
+def Info(cor0, texto, nome,**config_text_box):
     JGC = tk.Tk()
     JGC.title(f"{nome}")
     JGC.geometry("600x170")

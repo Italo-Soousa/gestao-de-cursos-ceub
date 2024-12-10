@@ -2,7 +2,7 @@ import tkinter as tk
 from util.db import conexaoBanco
 from tkinter import messagebox
 
-def Criar(cor0,texto,cor3):
+def Criar(cor0,cor1,texto,cor3,**config_text_box):
     JGC = tk.Tk()
     JGC.title("Criar Curso")
     JGC.geometry("600x210")
@@ -14,31 +14,37 @@ def Criar(cor0,texto,cor3):
         'fg': texto,
         'bg': cor0
     }
-
+    config_botao = {
+        'font': ("Arial", 10, "bold"),
+        'bg': cor1,
+        'fg': '#DCDCDC',
+        'activebackground': cor3,
+        'relief': "flat",
+    }
 
     # Exibindo o título com o nome do curso
     texto_nome = tk.Label(JGC, text=f"Cursos: ", **config_text)
     texto_nome.place(x=20, y=20)
-    nome_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
+    nome_entry = tk.Entry(JGC,**config_text_box, width=20)
     nome_entry.place(x=140, y=20)
 
     # Vagas
     texto_vagas = tk.Label(JGC, text="Vagas:", **config_text)
     texto_vagas.place(x=20, y=50)
-    vaga_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
+    vaga_entry = tk.Entry(JGC,**config_text_box, width=20)
     vaga_entry.place(x=140, y=50)
 
     # Dias
     texto_carga_horaria = tk.Label(JGC, text="Carga Horaria:", **config_text)
     texto_carga_horaria.place(x=20, y=80)
-    carga_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
+    carga_entry = tk.Entry(JGC,**config_text_box, width=20)
     carga_entry.place(x=140, y=80)
 
     # Descrição
     texto_descricao = tk.Label(JGC, text="Descrição:", **config_text)
     texto_descricao.place(x=250, y=110)
 
-    descricao_entry = tk.Entry(JGC, font=("Arial", 13), width=62,bg=cor3, bd=0, highlightthickness=0)
+    descricao_entry = tk.Entry(JGC,**config_text_box, width=62)
     descricao_entry.place(x=20, y=140)
 
     def salvarDados():
@@ -80,6 +86,6 @@ def Criar(cor0,texto,cor3):
         except Exception as e:
             messagebox.showerror("Erro", f"Ocorreu um erro ao salvar: {e}")
     # Botão para registrar
-    bntDeRegistro = tk.Button(JGC,font= ("Arial", 10, "bold"),text="Criar",bg= "#363636",fg= texto,relief= "flat",activebackground=cor3,width= 12,command=salvarDados)
+    bntDeRegistro = tk.Button(JGC,text="Criar",**config_botao,width= 12,command=salvarDados)
     bntDeRegistro.place(x=475, y=170)
     JGC.mainloop()

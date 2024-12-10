@@ -1,23 +1,29 @@
 import tkinter as tk
 from util.db import conexaoBanco
 from tkinter import messagebox
-def Editar(cor0, texto, nome,cor3):
+def Editar(cor0,cor1, texto, nome,cor3,**config_text_box):
     JGC = tk.Tk()
     JGC.title(f"{nome}")
     JGC.geometry("600x300")
     JGC.configure(bg=cor0)
     JGC.resizable(False, False)
-
     config_text = {
         'font': ("Arial", 13, "bold"),
         'fg': texto,
         'bg': cor0
     }
-    vaga_entry = tk.Entry(JGC, font=("Arial", 13), width=20, bg=cor3, bd=0, highlightthickness=0)
+    config_botao = {
+        'font': ("Arial", 10, "bold"),
+        'bg': cor1,
+        'fg': '#DCDCDC',
+        'activebackground': cor3,
+        'relief': "flat",
+    }
+    vaga_entry = tk.Entry(JGC,**config_text_box, width=20)
     vaga_entry.place(x=20, y=80)
-    carga_entry = tk.Entry(JGC, font=("Arial", 13), width=20, bg=cor3, bd=0, highlightthickness=0)
+    carga_entry = tk.Entry(JGC,**config_text_box, width=20)
     carga_entry.place(x=20, y=140)
-    descricao_entry = tk.Entry(JGC, font=("Arial", 13), width=62, bg=cor3, bd=0, highlightthickness=0)
+    descricao_entry = tk.Entry(JGC,**config_text_box, width=62)
     descricao_entry.place(x=20, y=230)
     try:
         # Conecta ao banco usando o util.db
@@ -135,8 +141,8 @@ def Editar(cor0, texto, nome,cor3):
                 print("Erro: Não foi possível conectar ao banco de dados.")
         except Exception as e:
             print(f"Erro ao deletar curso: {e}")
-    bntDedeletar = tk.Button(JGC, font=("Arial", 10, "bold"), text="Deletar", bg="#363636", fg=texto, relief="flat",activebackground=cor3, width=12, command=deletarDados)
+    bntDedeletar = tk.Button(JGC, text="Deletar", **config_botao, width=12, command=deletarDados)
     bntDedeletar.place(x=20, y=260)
-    bntDeRegistro = tk.Button(JGC,font= ("Arial", 10, "bold"),text="Editar",bg= "#363636",fg= texto,relief= "flat",activebackground=cor3,width= 12,command=salvarDados)
+    bntDeRegistro = tk.Button(JGC,text="Editar",**config_botao,width= 12,command=salvarDados)
     bntDeRegistro.place(x=475, y=260)
     JGC.mainloop()

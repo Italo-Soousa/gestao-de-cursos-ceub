@@ -1,18 +1,19 @@
 import tkinter as tk
-from tkinter import Label
-
+from tkinter import Label, Tk, PhotoImage
 from interface.login.paginaLogin import LoginUsuario
 from util.db import conexaoBanco
+import os
 from interface.login.pagina_adm.menus_adm import info
 from interface.login.pagina_adm.menus_adm import editar
 from interface.login.pagina_adm.menus_adm import editar_perfil
 from interface.login.pagina_adm.menus_adm import criar
 # variaveis
 curso_selecionado = ""
-cor0 = '#1C1C1C'
-cor1 = '#363636'
+cor0 = '#ffffff'
+cor1 = '#2491ff'
 texto = '#DCDCDC'
-cor3 = '#4F4F4F'
+texto1 = '#121212'
+cor3 = '#ffffff'
 
 # config botoes
 config_botao = {
@@ -40,16 +41,21 @@ config_botao_cursos = {
 config_text_box = {
     'font': ("Arial", 13, "bold"),
     'bg': cor3,
-    'fg': texto,
-    'relief': "flat",
-    'width': 49
+    'fg': texto1,
+    'bd':1,
+    'relief':"solid"
 }
 
-
+texto_informativo = None
 # memoriza o curso selecionado
 def salvar_curso(nome):
-    global curso_selecionado  # Garantir que estamos usando a variável global
+    global curso_selecionado,texto_informativo
     curso_selecionado = nome
+    if texto_informativo:
+        texto_informativo.config(text=f"Cursos: {nome}")
+    else:
+        texto_informativo = Label(x, text=f"Cursos: {nome}", font=("Arial", 13, "bold"), fg=texto1, bg=cor0)
+        texto_informativo.place(x=145, y=43)
     print(f"Curso selecionado: {nome}")
 
 
@@ -127,22 +133,22 @@ def pesquisar(event, canvas, pesquisa_var=None):
 
 def info_curso():
     if curso_selecionado:
-        info.Info(cor0, texto, curso_selecionado)
+        info.Info(cor0, texto1, curso_selecionado,**config_text_box)
     else:
         print("Nenhum curso foi selecionado!")
 
 def j_criar():
-    criar.Criar(cor0, texto, cor3)
+    criar.Criar(cor0,cor1, texto1, cor3,**config_text_box)
 
 # Janela criar
 def j_editar():
     if curso_selecionado:
-        editar.Editar(cor0, texto, curso_selecionado, cor3)
+        editar.Editar(cor0,cor1, texto1, curso_selecionado, cor3,**config_text_box)
     else:
         print("Nenhum curso foi selecionado!")
 
 def j_editar_perfil(perfil):
-    editar_perfil.Editar_perfil(cor0, texto, perfil, cor3)
+    editar_perfil.Editar_perfil(cor0,cor1, texto1, perfil, cor3,**config_text_box)
 # tela de login
 def sair(jgc):
     jgc.quit()
@@ -150,18 +156,27 @@ def sair(jgc):
     LoginUsuario()
 
 def iniciar(perfil):
-    JGC = tk.Tk()
+    JGC: Tk = tk.Tk()
     JGC.title("Gestão de Cursos UNI-CEUB")
     JGC.geometry("600x350")
     JGC.configure(bg=cor0)
     JGC.resizable(False, False)
+    global x
+    x = JGC
+    # Imagem CEUB (na parte esquerda do grid)
+    diretorio_atual = os.path.dirname(__file__)
+    caminho_imagem = os.path.join(diretorio_atual, "..", "..", "imagens", "uniceub.png")
+    logo_img = PhotoImage(file=caminho_imagem)
+
+    logo_label = tk.Label(JGC, image=logo_img, bd=0, relief="solid")
+    logo_label.place(x=10, y=0)
 
     # local dos botoes de menu
     menu = tk.Canvas(JGC, width=110, height=300, bg=cor0, bd=0, highlightthickness=0)
-    menu.place(x=17, y=38)
+    menu.place(x=17, y=45)
 
     # local dos botoes de curso
-    canvas = tk.Canvas(JGC, width=445, height=265, bg=cor3, bd=0, highlightthickness=0)
+    canvas = tk.Canvas(JGC, width=445, height=265, bg=cor3, bd=0, highlightthickness=1,highlightbackground="black")
     canvas.place(x=145, y=75)
 
     # Adicionando o evento de rolagem no local dos cursos
@@ -169,29 +184,26 @@ def iniciar(perfil):
 
     # botoes do menu
     botao_Info = tk.Button(JGC, text="Info", **config_botao, command=lambda: info_curso())
-    menu.create_window(55, 60, window=botao_Info)
+    menu.create_window(55, 54, window=botao_Info)
 
     botao_Criar = tk.Button(JGC, text="Criar Curso", **config_botao, command=j_criar)
-    menu.create_window(55, 115, window=botao_Criar)
+    menu.create_window(55, 110, window=botao_Criar)
 
     botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=lambda: j_editar())
-    menu.create_window(55, 170, window=botao_Editar)
+    menu.create_window(55, 164, window=botao_Editar)
 
     botao_Editar_perfil = tk.Button(JGC, text="Editar perfil", **config_botao, command=lambda: j_editar_perfil(perfil))
-    menu.create_window(55, 225, window=botao_Editar_perfil)
+    menu.create_window(55, 220, window=botao_Editar_perfil)
 
     botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair(JGC))
-    menu.create_window(55, 280, window=botao_Sair)
+    menu.create_window(55, 274, window=botao_Sair)
 
 
 
     # Caixa de pesquisa
     pesquisa_var = tk.StringVar()
-    pesquisa = tk.Entry(JGC, textvariable=pesquisa_var, **config_text_box)
+    pesquisa = tk.Entry(JGC, textvariable=pesquisa_var, **config_text_box,width= 49)
     pesquisa.place(x=145, y=15)
-
-    texto_informativo = Label(JGC, text="Cursos:", font=("Arial", 13, "bold"), fg=texto, bg=cor0)
-    texto_informativo.place(x=145, y=43)
 
     # Monitorar a barra de pesquisa e atualizar os botões quando o usuário digitar
     pesquisa.bind("<KeyRelease>", lambda event: pesquisar(event, canvas, pesquisa_var))

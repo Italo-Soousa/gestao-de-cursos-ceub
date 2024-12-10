@@ -1,7 +1,7 @@
 import tkinter as tk
 from util.db import conexaoBanco
 from tkinter import messagebox
-def Editar_perfil(cor0, texto, login,cor3):
+def Editar_perfil(cor0,cor1, texto, login,cor3,**config_text_box):
     JGC = tk.Tk()
     JGC.title(f"{login}")
     JGC.geometry("600x220")
@@ -13,9 +13,16 @@ def Editar_perfil(cor0, texto, login,cor3):
         'fg': texto,
         'bg': cor0
     }
-    senha_entry = tk.Entry(JGC, font=("Arial", 13), width=20, bg=cor3, bd=0, highlightthickness=0)
+    config_botao = {
+        'font': ("Arial", 10, "bold"),
+        'bg': cor1,
+        'fg': '#DCDCDC',
+        'activebackground': cor3,
+        'relief': "flat",
+    }
+    senha_entry = tk.Entry(JGC,**config_text_box, width=20)
     senha_entry.place(x=20, y=80)
-    email_entry = tk.Entry(JGC, font=("Arial", 13), width=20, bg=cor3, bd=0, highlightthickness=0)
+    email_entry = tk.Entry(JGC,**config_text_box, width=20)
     email_entry.place(x=20, y=140)
     try:
         # Conecta ao banco usando o util.db
@@ -98,6 +105,6 @@ def Editar_perfil(cor0, texto, login,cor3):
         except Exception as e:
             messagebox.showerror("Erro", f"Ocorreu um erro ao salvar: {e}")
     # Botão para registrar
-    bntDeRegistro = tk.Button(JGC,font= ("Arial", 10, "bold"),text="Editar",bg= "#363636",fg= texto,relief= "flat",activebackground=cor3,width= 12,command=salvarDados)
+    bntDeRegistro = tk.Button(JGC,text="Editar",**config_botao,width= 12,command=salvarDados)
     bntDeRegistro.place(x=475, y=180)
     JGC.mainloop()
