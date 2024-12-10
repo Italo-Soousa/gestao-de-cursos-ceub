@@ -3,9 +3,65 @@ from tkinter import ttk, PhotoImage, messagebox
 from util.db import conexaoBanco  # Certifique-se de ter a classe SQL configurada
 from paginaDadosUsuario import abrir_dados_usuario
 from Compartilhado import inscricoes
+from paginaCurso import abrir_pagina_curso
 
 
 def abrir_pagina_meus_cursos():
+
+    def buscar_detalhes_curso(curso_id):
+        """
+        Busca os detalhes do curso no banco de dados com base no ID.
+
+        Args:
+            curso_id (str): ID do curso a ser buscado.
+
+        Returns:
+            dict: Dicionário com os detalhes do curso.
+        """
+        try:
+            conn = conexaoBanco()
+            cursor = conn.cursor()
+
+            # Consulta ao banco de dados
+            cursor.execute("SELECT nome, carga_horaria, vagas, descricao FROM curso WHERE id_curso = %s", (curso_id,))
+            resultado = cursor.fetchone()
+            conn.close()
+
+            if resultado:
+                titulo, carga_horaria, vagas, descricao = resultado
+                disponibilidade = "Disponível" if vagas > 0 else "Indisponível"
+
+                return {
+                    'nome': titulo,
+                    'carga_horaria': carga_horaria,
+                    'vagas': vagas,
+                    'disponibilidade': disponibilidade,
+                    'descricao': descricao
+                }
+            else:
+                messagebox.showerror("Erro", "Curso não encontrado.")
+                return None
+
+        except Exception as e:
+            messagebox.showerror("Erro ao Buscar Curso", f"Erro ao buscar os detalhes do curso.\n\n{e}")
+            return None
+
+    def abrir_curso(tree):
+        """
+        Coleta o ID do curso selecionado e abre a página de detalhes do curso.
+        """
+        item_selecionado = tree.selection()
+
+        if not item_selecionado:
+            messagebox.showwarning("Nenhum Curso Selecionado", "Por favor, selecione um curso para abrir.")
+            return
+
+        valores = tree.item(item_selecionado, 'values')
+        curso_id = valores[0]  # Supondo que o ID está na primeira coluna
+
+        detalhes_curso = buscar_detalhes_curso(curso_id)
+        if detalhes_curso:
+            abrir_pagina_curso(curso_id, detalhes_curso)
 
     # Janela principal
     root = tk.Toplevel()
@@ -63,14 +119,23 @@ def abrir_pagina_meus_cursos():
     content_area = tk.Frame(root)
     content_area.pack(side="right", expand=True, fill="both")
 
-    def consultar_dados(tree):
+
+    def consultar_cursos_inscritos(tree, id_perfis):
+        """
+        Consulta os cursos em que o usuário está inscrito e exibe na Treeview.
+        """
         try:
             # Conectar ao banco de dados
             conn = conexaoBanco()
             cursor = conn.cursor()
 
-            # Executar a consulta SQL (adicionando o campo de vagas)
-            cursor.execute("SELECT id, titulo, carga_horaria, vagas FROM Cursos")
+            # Consulta SQL para buscar os cursos inscritos pelo usuário
+            cursor.execute("""
+                SELECT c.id_curso, c.nome, c.carga_horaria, c.vagas
+                FROM inscricoes i
+                JOIN curso c ON i.id_curso = c.id_curso
+                WHERE i.id_perfis = %s
+            """, (id_perfis,))
 
             # Limpar o Treeview antes de inserir novos dados
             for item in tree.get_children():
@@ -82,11 +147,63 @@ def abrir_pagina_meus_cursos():
                 disponibilidade = "Disponível" if vagas > 0 else "Indisponível"
                 tree.insert("", "end", values=(id, titulo, carga_horaria, disponibilidade))
 
-            # Fechar a conexão
+            # Fechar conexão
+            cursor.close()
             conn.close()
 
         except Exception as e:
-            messagebox.showerror("Erro ao Consultar", f"Não foi possível consultar os dados.\n\n{e}")
+            messagebox.showerror("Erro ao Consultar", f"Não foi possível consultar os cursos inscritos.\n\n{e}")
+
+    def desinscrever_curso(tree, id_perfis):
+        """
+        Remove o curso selecionado da tabela `inscricoes` para o usuário logado.
+        """
+        try:
+            # Obter o item selecionado
+            item_selecionado = tree.selection()
+
+            if not item_selecionado:
+                messagebox.showwarning("Nenhum Curso Selecionado",
+                                       "Por favor, selecione um curso para se desinscrever.")
+                return
+
+            # Extrair os valores do curso selecionado
+            valores = tree.item(item_selecionado, 'values')
+            curso_id, titulo, carga_horaria, disponibilidade = valores
+
+            # Conectar ao banco de dados
+            conn = conexaoBanco()
+            cursor = conn.cursor()
+
+            # Verificar se o usuário está inscrito no curso
+            cursor.execute(
+                "SELECT * FROM inscricoes WHERE id_perfis = %s AND id_curso = %s",
+                (id_perfis, curso_id)
+            )
+            if not cursor.fetchone():
+                messagebox.showinfo("Não Inscrito", "Você não está inscrito nesse curso.")
+                conn.close()
+                return
+
+            # Remover a inscrição da tabela `inscricoes`
+            cursor.execute(
+                "DELETE FROM inscricoes WHERE id_perfis = %s AND id_curso = %s",
+                (id_perfis, curso_id)
+            )
+            conn.commit()  # Confirmar a exclusão
+
+            # Mensagem de sucesso
+            messagebox.showinfo("Desinscrição Realizada", f"Você se desinscreveu do curso: {titulo}")
+
+            # Atualizar Treeview (remover item visualmente)
+            tree.delete(item_selecionado)
+
+            # Fechar conexão
+            cursor.close()
+            conn.close()
+
+        except Exception as e:
+            messagebox.showerror("Erro ao Desinscrever", f"Ocorreu um erro ao se desinscrever do curso.\n\n{e}")
 
     # ========================== Treeview na Área de Conteúdo ==========================
 
@@ -99,7 +216,7 @@ def abrir_pagina_meus_cursos():
         et_nome = ttk.Entry(parent, width=30, textvariable=nome_var, font='Arial 12')
         et_nome.grid(row=0, column=1, pady=10)
 
-        bt_consultar = tk.Button(parent, text="Consultar", command=lambda: consultar_dados(tree))
+        bt_consultar = tk.Button(parent, text="Consultar", command=lambda: consultar_cursos_inscritos(tree, id_perfis=1))
         bt_consultar.grid(row=0, column=2, padx=10, pady=10)
 
         # Criar Treeview para exibir os cursos inscritos
@@ -120,9 +237,9 @@ def abrir_pagina_meus_cursos():
 
         # Botões de operação
         bt_abrir = tk.Button(parent, text="Abrir", command=lambda: abrir_curso(tree))
-        bt_abrir.grid(row=2, column=2, padx=10, pady=10)
+        bt_abrir.grid(row=2, column=0, padx=10, pady=10)
 
-        bt_incluir = tk.Button(parent, text="Desinscrever", command=lambda: InscreverCurso())
+        bt_incluir = tk.Button(parent, text="Desinscrever", command=lambda: desinscrever_curso(tree, id_perfis=1))
         bt_incluir.grid(row=2, column=2, padx=10, pady=10)
 
         return tree
