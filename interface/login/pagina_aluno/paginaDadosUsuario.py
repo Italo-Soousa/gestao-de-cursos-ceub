@@ -3,10 +3,7 @@ from tkinter import messagebox
 from util.db import conexaoBanco
 
 def abrir_dados_usuario(user_id):
-    """
-    Abre a janela para exibir os dados do usuário.
-    :param user_id: ID do usuário logado.
-    """
+
     # Criar a janela principal
     janela_usuario = tk.Toplevel()
     janela_usuario.title("Seus Dados")
@@ -19,7 +16,7 @@ def abrir_dados_usuario(user_id):
         cursor = conexao.cursor()
 
         # Consultar os dados do usuário
-        cursor.execute("SELECT nome, email, login, senha, tipo_usuario FROM usuarios WHERE id = %s", (user_id,))
+        cursor.execute("SELECT nome, email, login, senha, tipo_usuario FROM perfis WHERE id_perfis = %s", (user_id,))
         resultado = cursor.fetchone()
 
         if resultado:

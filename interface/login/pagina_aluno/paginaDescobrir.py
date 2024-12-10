@@ -7,9 +7,9 @@ from paginaMeusCursos import abrir_pagina_meus_cursos
 from Compartilhado import inscricoes
 
 
-def inscrever_curso(tree):
+def inscrever_curso(tree, id_perfis):
     """
-    Inscreve o curso selecionado no Treeview principal.
+    Inscreve o curso selecionado no banco de dados para o usuário logado.
     """
     try:
         # Obter o item selecionado
@@ -23,14 +23,33 @@ def inscrever_curso(tree):
         valores = tree.item(item_selecionado, 'values')
         curso_id, titulo, carga_horaria, disponibilidade = valores
 
-        # Validar se o curso já foi inscrito
-        if any(inscrito[0] == curso_id for inscrito in inscricoes):
+        # Conectar ao banco de dados
+        conn = conexaoBanco()
+        cursor = conn.cursor()
+
+        # Verificar se o usuário já está inscrito no curso
+        cursor.execute(
+            "SELECT * FROM inscricoes WHERE id_perfis = %s AND id_curso = %s",
+            (id_perfis, curso_id)
+        )
+        if cursor.fetchone():
             messagebox.showinfo("Curso já Inscrito", "Você já está inscrito nesse curso.")
+            conn.close()
             return
 
-        # Adicionar o curso à lista de inscrições
-        inscricoes.append((curso_id, titulo, carga_horaria, disponibilidade))
+        # Inserir a inscrição na tabela `inscricoes`
+        cursor.execute(
+            "INSERT INTO inscricoes (id_perfis, id_curso) VALUES (%s, %s)",
+            (id_perfis, curso_id)
+        )
+        conn.commit()  # Confirmar a transação
+
+        # Mensagem de sucesso
         messagebox.showinfo("Inscrição Realizada", f"Você se inscreveu no curso: {titulo}")
+
+        # Fechar conexão
+        cursor.close()
+        conn.close()
 
     except Exception as e:
         messagebox.showerror("Erro ao Inscrever", f"Ocorreu um erro ao se inscrever no curso.\n\n{e}")
@@ -66,7 +85,7 @@ def consultar_dados(tree):
         cursor = conn.cursor()
 
         # Executar a consulta SQL (adicionando o campo de vagas)
-        cursor.execute("SELECT id, titulo, carga_horaria, vagas FROM Cursos")
+        cursor.execute("SELECT id_curso, nome, carga_horaria, vagas FROM curso")
 
         # Limpar o Treeview antes de inserir novos dados
         for item in tree.get_children():
@@ -99,7 +118,7 @@ def buscar_detalhes_curso(curso_id):
         cursor = conn.cursor()
 
         # Consulta ao banco de dados
-        cursor.execute("SELECT titulo, carga_horaria, vagas, descricao FROM Cursos WHERE id = %s", (curso_id,))
+        cursor.execute("SELECT nome, carga_horaria, vagas, descricao FROM curso WHERE id_curso = %s", (curso_id,))
         resultado = cursor.fetchone()
         conn.close()
 
@@ -108,7 +127,7 @@ def buscar_detalhes_curso(curso_id):
             disponibilidade = "Disponível" if vagas > 0 else "Indisponível"
 
             return {
-                'titulo': titulo,
+                'nome': titulo,
                 'carga_horaria': carga_horaria,
                 'vagas': vagas,
                 'disponibilidade': disponibilidade,
@@ -164,7 +183,7 @@ titulo = tk.Label(top_frame, text="Gestão de Cursos Monitoria", font='Helvetica
 titulo.grid(row=0, column=2, padx=20, sticky="ew")  # Expansível horizontalmente
 
 # Botão Nome do usuário (na direita do grid)
-botao_usuario = tk.Button(top_frame, text="Nome do usuário", font=("Arial", 12), command=lambda: abrir_dados_usuario())
+botao_usuario = tk.Button(top_frame, text="Nome do usuário", font=("Arial", 12), command=lambda: abrir_dados_usuario(3))
 botao_usuario.grid(row=0, column=4, padx=20, sticky="e")  # Alinhado à direita
 
 # Barra lateral
@@ -224,7 +243,7 @@ def criar_treeview(parent):
 
 
     # Botões de operação
-    bbt_incluir = tk.Button(content_area, text="Inscrever", command=lambda: inscrever_curso(tree))
+    bbt_incluir = tk.Button(content_area, text="Inscrever", command=lambda: inscrever_curso(tree, id_perfis=1))
     bbt_incluir.grid(row=2, column=0, padx=10, pady=10)
 
     bt_abrir = tk.Button(parent, text="Abrir", command=lambda: abrir_curso(tree))

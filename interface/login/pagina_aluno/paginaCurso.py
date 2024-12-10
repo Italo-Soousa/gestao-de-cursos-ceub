@@ -9,7 +9,7 @@ def abrir_pagina_curso(curso_id, detalhes_curso):
     nova_janela.configure(bg="#333333")  # Fundo escuro para combinar com o tema da imagem
 
     # Título do curso
-    titulo_label = tk.Label(nova_janela, text=detalhes_curso['titulo'], font='Helvetica 20 bold', fg="white", bg="#333333")
+    titulo_label = tk.Label(nova_janela, text=detalhes_curso['nome'], font='Helvetica 20 bold', fg="white", bg="#333333")
     titulo_label.pack(pady=20)
 
     # Campos detalhados
