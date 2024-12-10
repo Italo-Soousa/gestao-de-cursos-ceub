@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import Label
+
+from interface.login.paginaLogin import LoginUsuario
 from util.db import conexaoBanco
 from interface.login.pagina_adm.menus_adm import info
 from interface.login.pagina_adm.menus_adm import editar
 from interface.login.pagina_adm.menus_adm import criar
-
+from interface.login import paginaLogin
 # variaveis
 curso_selecionado = ""
 cor0 = '#1C1C1C'
@@ -141,9 +143,10 @@ def j_editar():
 
 
 # tela de login
-def sair():
-    print(f"voltar para tela de login")
-
+def sair(jgc):
+    jgc.quit()
+    jgc.destroy()
+    LoginUsuario()
 
 def iniciar():
     JGC = tk.Tk()
@@ -173,7 +176,7 @@ def iniciar():
     botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=lambda: j_editar())
     menu.create_window(55, 206, window=botao_Editar)
 
-    botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair)
+    botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair(JGC))
     menu.create_window(55, 276, window=botao_Sair)
 
 

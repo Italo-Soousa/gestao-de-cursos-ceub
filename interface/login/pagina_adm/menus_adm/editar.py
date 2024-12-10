@@ -1,9 +1,10 @@
 import tkinter as tk
-
+from util.db import conexaoBanco
+from tkinter import messagebox
 def Editar(cor0, texto, nome,cor3):
     JGC = tk.Tk()
     JGC.title(f"{nome}")
-    JGC.geometry("600x250")
+    JGC.geometry("600x300")
     JGC.configure(bg=cor0)
     JGC.resizable(False, False)
 
@@ -12,40 +13,104 @@ def Editar(cor0, texto, nome,cor3):
         'fg': texto,
         'bg': cor0
     }
+    vaga_entry = tk.Entry(JGC, font=("Arial", 13), width=20, bg=cor3, bd=0, highlightthickness=0)
+    vaga_entry.place(x=20, y=80)
+    carga_entry = tk.Entry(JGC, font=("Arial", 13), width=20, bg=cor3, bd=0, highlightthickness=0)
+    carga_entry.place(x=20, y=140)
+    descricao_entry = tk.Entry(JGC, font=("Arial", 13), width=62, bg=cor3, bd=0, highlightthickness=0)
+    descricao_entry.place(x=20, y=230)
+    try:
+        # Conecta ao banco usando o util.db
+        conexao = conexaoBanco()
+        if conexao:
+            cursor = conexao.cursor()
 
-    # Exibindo o título com o nome do curso
-    texto_informativo = tk.Label(JGC, text=f"Cursos: {nome}", **config_text)
-    texto_informativo.place(x=80, y=20)
+            # Consulta as informações do curso pelo nome
+            cursor.execute("SELECT vagas, carga_horaria, descricao FROM curso WHERE nome = %s", (nome,))
+            resultado = cursor.fetchone()
 
-    # Vagas
-    texto_vagas = tk.Label(JGC, text="Vagas:", **config_text)
-    texto_vagas.place(x=20, y=60)
-    vaga_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
-    vaga_entry.place(x=140, y=60)
+            if resultado:
+                vag,carga_horaria, desc= resultado
 
-    # Dias
-    texto_dias = tk.Label(JGC, text="Dias:", **config_text)
-    texto_dias.place(x=20, y=90)
-    dias_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
-    dias_entry.place(x=140, y=90)
+                # Exibindo o título com o nome do curso
+                texto_informativo = tk.Label(JGC, text=f"Cursos: {nome}", **config_text)
+                texto_informativo.place(x=20, y=20)
 
-    # Horas
-    texto_horas = tk.Label(JGC, text="Horas:", **config_text)
-    texto_horas.place(x=20, y=120)
-    horas_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
-    horas_entry.place(x=140, y=120)
+                # Vagas
+                texto_vagas = tk.Label(JGC, text=f"Vagas: {vag}", **config_text)
+                texto_vagas.place(x=20, y=50)
+                # Dias
+                texto_carga  = tk.Label(JGC, text=f"carga_horaria: {carga_horaria}", **config_text)
+                texto_carga .place(x=20, y=110)
 
-    # Data de início
-    texto_data_inicio = tk.Label(JGC, text="Data de Início:", **config_text)
-    texto_data_inicio.place(x=20, y=150)
-    data_inicio_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
-    data_inicio_entry.place(x=140, y=150)
+                # Descrição
+                texto_descricao = tk.Label(JGC, text="Descrição:", **config_text)
+                texto_descricao.place(x=250, y=170)
 
-    # Descrição
-    texto_descricao = tk.Label(JGC, text="Descrição:", **config_text)
-    texto_descricao.place(x=250, y=180)
+                texto_descricao = tk.Label(JGC, text=f"{desc}", **config_text)
+                texto_descricao.place(x=20, y=200)
 
-    descricao_entry = tk.Entry(JGC, font=("Arial", 13), width=62,bg=cor3, bd=0, highlightthickness=0)
-    descricao_entry.place(x=20, y=210)
+            cursor.close()
+            conexao.close()
+        else:
+            print("Erro", "Não foi possível conectar ao banco de dados.")
+    except Exception as e:
+        print("Erro", f"Ocorreu um erro ao salvar: {e}")
 
+    def salvarDados():
+
+        vagas = vaga_entry.get()
+        carga_horaria = carga_entry.get()
+        descricao = descricao_entry.get()
+
+        # Verificando se os dados não estão vazios
+        if not vagas and not carga_horaria and not descricao:
+            messagebox.showwarning("Aviso", "Nenhum campo foi preenchido para atualização.")
+            return
+
+        try:
+            # Conecta ao banco usando o util.db
+            conexao = conexaoBanco()
+            if conexao:
+                cursor = conexao.cursor()
+
+                update_values = []
+                update_query = "UPDATE curso SET "
+                if vagas:
+                    update_query += "vagas = %s, "
+                    update_values.append(vagas)
+                if carga_horaria:
+                    update_query += "carga_horaria = %s, "
+                    update_values.append(carga_horaria)
+                if descricao:
+                    update_query += "descricao = %s, "
+                    update_values.append(descricao)
+
+                # Remove a vírgula final, caso algum campo não tenha sido alterado
+                if update_values:
+                    update_query = update_query.rstrip(", ")  # Remove a vírgula extra no final
+                    update_query += " WHERE nome = %s"
+                    update_values.append(nome)
+                    # Exibindo a consulta para debug
+                    print(f"Consulta gerada: {update_query}")
+                    print(f"Valores passados: {update_values}")
+                    # Executando a consulta no banco
+                    cursor.execute(update_query, tuple(update_values))
+                    conexao.commit()
+                    messagebox.showinfo("Sucesso", "Registro salvo com sucesso!")
+                else:
+                    messagebox.showwarning("Aviso", "Nenhum campo foi alterado.")
+                # Fecha a conexão e o cursor
+                cursor.close()
+                conexao.close()
+
+                # Fecha a janela de registro
+                JGC.destroy()
+            else:
+                messagebox.showerror("Erro", "Não foi possível conectar ao banco de dados.")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Ocorreu um erro ao salvar: {e}")
+    # Botão para registrar
+    bntDeRegistro = tk.Button(JGC,font= ("Arial", 10, "bold"),text="Editar",bg= "#363636",fg= texto,relief= "flat",activebackground=cor3,width= 12,command=salvarDados)
+    bntDeRegistro.place(x=475, y=260)
     JGC.mainloop()
