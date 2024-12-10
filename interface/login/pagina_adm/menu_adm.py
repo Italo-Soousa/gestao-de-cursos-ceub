@@ -5,8 +5,8 @@ from interface.login.paginaLogin import LoginUsuario
 from util.db import conexaoBanco
 from interface.login.pagina_adm.menus_adm import info
 from interface.login.pagina_adm.menus_adm import editar
+from interface.login.pagina_adm.menus_adm import editar_perfil
 from interface.login.pagina_adm.menus_adm import criar
-from interface.login import paginaLogin
 # variaveis
 curso_selecionado = ""
 cor0 = '#1C1C1C'
@@ -16,7 +16,7 @@ cor3 = '#4F4F4F'
 
 # config botoes
 config_botao = {
-    'font': ("Arial", 13, "bold"),
+    'font': ("Arial", 10, "bold"),
     'bg': cor1,
     'fg': texto,
     'activebackground': cor3,
@@ -141,14 +141,15 @@ def j_editar():
     else:
         print("Nenhum curso foi selecionado!")
 
-
+def j_editar_perfil(perfil):
+    editar_perfil.Editar_perfil(cor0, texto, perfil, cor3)
 # tela de login
 def sair(jgc):
     jgc.quit()
     jgc.destroy()
     LoginUsuario()
 
-def iniciar():
+def iniciar(perfil):
     JGC = tk.Tk()
     JGC.title("Gestão de Cursos UNI-CEUB")
     JGC.geometry("600x350")
@@ -168,16 +169,19 @@ def iniciar():
 
     # botoes do menu
     botao_Info = tk.Button(JGC, text="Info", **config_botao, command=lambda: info_curso())
-    menu.create_window(55, 63, window=botao_Info)
+    menu.create_window(55, 60, window=botao_Info)
 
     botao_Criar = tk.Button(JGC, text="Criar Curso", **config_botao, command=j_criar)
-    menu.create_window(55, 135, window=botao_Criar)
+    menu.create_window(55, 115, window=botao_Criar)
 
     botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=lambda: j_editar())
-    menu.create_window(55, 206, window=botao_Editar)
+    menu.create_window(55, 170, window=botao_Editar)
+
+    botao_Editar_perfil = tk.Button(JGC, text="Editar perfil", **config_botao, command=lambda: j_editar_perfil(perfil))
+    menu.create_window(55, 225, window=botao_Editar_perfil)
 
     botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair(JGC))
-    menu.create_window(55, 276, window=botao_Sair)
+    menu.create_window(55, 280, window=botao_Sair)
 
 
 

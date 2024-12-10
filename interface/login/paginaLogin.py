@@ -64,7 +64,7 @@ def LoginUsuario():
 
                 # Redireciona com base no tipo de usuário
                 if tipo_usuario == "administrador":
-                    menu_adm.iniciar()
+                    menu_adm.iniciar(usuario)
                 elif tipo_usuario == "aluno":
                     abrirPaginaAluno()
                 else:

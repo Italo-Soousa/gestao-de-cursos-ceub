@@ -111,6 +111,32 @@ def Editar(cor0, texto, nome,cor3):
         except Exception as e:
             messagebox.showerror("Erro", f"Ocorreu um erro ao salvar: {e}")
     # Botão para registrar
+    def deletarDados():
+        try:
+            # Conecta ao banco usando sua função de conexão
+            conexao = conexaoBanco()
+            if conexao:
+                cursor = conexao.cursor()
+
+                # Executa o comando DELETE
+                cursor.execute("DELETE FROM curso WHERE nome = %s", (nome,))
+
+                # Confirma a transação
+                conexao.commit()
+
+                print(f"Curso '{nome}' deletado com sucesso!")
+
+                # Fecha o cursor e a conexão
+                cursor.close()
+                conexao.close()
+                JGC.quit()
+                JGC.destroy()
+            else:
+                print("Erro: Não foi possível conectar ao banco de dados.")
+        except Exception as e:
+            print(f"Erro ao deletar curso: {e}")
+    bntDedeletar = tk.Button(JGC, font=("Arial", 10, "bold"), text="Deletar", bg="#363636", fg=texto, relief="flat",activebackground=cor3, width=12, command=deletarDados)
+    bntDedeletar.place(x=20, y=260)
     bntDeRegistro = tk.Button(JGC,font= ("Arial", 10, "bold"),text="Editar",bg= "#363636",fg= texto,relief= "flat",activebackground=cor3,width= 12,command=salvarDados)
     bntDeRegistro.place(x=475, y=260)
     JGC.mainloop()

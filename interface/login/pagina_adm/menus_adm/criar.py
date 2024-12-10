@@ -29,7 +29,7 @@ def Criar(cor0,texto,cor3):
     vaga_entry.place(x=140, y=50)
 
     # Dias
-    texto_carga_horaria = tk.Label(JGC, text="carga_horaria:", **config_text)
+    texto_carga_horaria = tk.Label(JGC, text="Carga Horaria:", **config_text)
     texto_carga_horaria.place(x=20, y=80)
     carga_entry = tk.Entry(JGC, font=("Arial", 13), width=20,bg=cor3, bd=0, highlightthickness=0)
     carga_entry.place(x=140, y=80)

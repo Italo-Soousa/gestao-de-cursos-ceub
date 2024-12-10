@@ -36,7 +36,7 @@ def Info(cor0, texto, nome):
                 texto_vagas.place(x=20, y=50)
 
                 # Dias
-                texto_dias = tk.Label(JGC, text=f"carga_horaria: {carga_horaria}", **config_text)
+                texto_dias = tk.Label(JGC, text=f"Carga Horaria: {carga_horaria}", **config_text)
                 texto_dias.place(x=20, y=80)
 
                 # Descrição
