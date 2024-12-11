@@ -50,7 +50,7 @@ def gerar_botoes(canvas, termo_pesquisa=""):
         if conexao:
             cursor = conexao.cursor()
 
-            cursor.execute("SELECT nome FROM curso")
+            cursor.execute("SELECT nome FROM cursos")
             resultados = cursor.fetchall()
 
             # Filtrar os cursos com base no termo de pesquisa
@@ -104,7 +104,7 @@ def j_criar():
 
 
 # Janela criar
-def j_editar():
+def j_editar(perfil):
     if curso_selecionado:
         editar.Editar(curso_selecionado)
     else:
@@ -157,7 +157,7 @@ def iniciar(perfil):
     botao_Criar = tk.Button(JDA, text="Criar Curso", **config_botao, command=j_criar)
     menu.create_window(55, 110, window=botao_Criar)
 
-    botao_Editar = tk.Button(JDA, text="Editar Curso", **config_botao, command=lambda: j_editar())
+    botao_Editar = tk.Button(JDA, text="Editar Curso", **config_botao, command=lambda: j_editar(perfil))
     menu.create_window(55, 164, window=botao_Editar)
 
     botao_Editar_perfil = tk.Button(JDA, text="Editar perfil", **config_botao, command=lambda: j_editar_perfil(perfil))

@@ -39,7 +39,7 @@ def Info(nome):
         if conexao:
             cursor = conexao.cursor()
 
-            cursor.execute("SELECT vagas, carga_horaria, descricao, id_curso FROM curso WHERE nome = %s", (nome,))
+            cursor.execute("SELECT vagas, carga_horaria, descricao, id_curso FROM cursos WHERE nome = %s", (nome,))
             resultado = cursor.fetchone()
 
             if resultado:

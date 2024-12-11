@@ -17,7 +17,7 @@ def Info(nome):
             cursor = conexao.cursor()
 
             # Consulta as informações do curso pelo nome
-            cursor.execute("SELECT vagas, carga_horaria, descricao FROM curso WHERE nome = %s", (nome,))
+            cursor.execute("SELECT vagas, carga_horaria, descricao FROM cursos WHERE nome = %s", (nome,))
             resultado = cursor.fetchone()
 
             if resultado:

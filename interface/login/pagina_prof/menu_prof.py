@@ -66,7 +66,7 @@ def gerar_botoes(canvas, termo_pesquisa=""):
                     ids_cursos = [id_curso[0] for id_curso in ids_cursos]
 
                     # Recupera os nomes dos cursos
-                    cursor.execute("SELECT nome FROM curso WHERE id_curso IN (%s)" % ",".join(["%s"] * len(ids_cursos)),
+                    cursor.execute("SELECT nome FROM cursos WHERE id_curso IN (%s)" % ",".join(["%s"] * len(ids_cursos)),
                                    ids_cursos)
                     resultados = cursor.fetchall()
 

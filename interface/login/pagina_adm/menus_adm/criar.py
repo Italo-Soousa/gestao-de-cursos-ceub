@@ -48,7 +48,7 @@ def Criar():
             if conexao:
                 cursor = conexao.cursor()
 
-                cursor.execute("INSERT INTO curso (nome, vagas, carga_horaria, descricao) VALUES (%s, %s, %s, %s)",
+                cursor.execute("INSERT INTO cursos (nome, vagas, carga_horaria, descricao) VALUES (%s, %s, %s, %s)",
                                (nome, vagas, carga_horaria, descricao))
 
                 # Confirma as alterações no banco
