@@ -1,18 +1,14 @@
 import tkinter as tk
 from util.db import conexaoBanco
+from util.config import cor0, config_text1
 
-def Info(cor0, texto, nome,**config_text_box):
+
+def Info(nome):
     JGC = tk.Tk()
-    JGC.title(f"{nome}")
+    JGC.title("Janela de Informaçoes do Curso")
     JGC.geometry("600x170")
     JGC.configure(bg=cor0)
     JGC.resizable(False, False)
-
-    config_text = {
-        'font': ("Arial", 13, "bold"),
-        'fg': texto,
-        'bg': cor0
-    }
 
     try:
         # Conecta ao banco usando o util.db
@@ -25,25 +21,25 @@ def Info(cor0, texto, nome,**config_text_box):
             resultado = cursor.fetchone()
 
             if resultado:
-                vagas,carga_horaria, descricao= resultado
+                vagas, carga_horaria, descricao = resultado
 
                 # Exibindo o título com o nome do curso
-                texto_informativo = tk.Label(JGC, text=f"Cursos: {nome}", **config_text)
+                texto_informativo = tk.Label(JGC, text=f"Nome do Curso: {nome}", **config_text1)
                 texto_informativo.place(x=20, y=20)
 
                 # Vagas
-                texto_vagas = tk.Label(JGC, text=f"Vagas: {vagas}", **config_text)
+                texto_vagas = tk.Label(JGC, text=f"Vagas do Curso: {vagas}", **config_text1)
                 texto_vagas.place(x=20, y=50)
 
                 # Dias
-                texto_dias = tk.Label(JGC, text=f"Carga Horaria: {carga_horaria}", **config_text)
+                texto_dias = tk.Label(JGC, text=f"Carga Horaria do Curso: {carga_horaria}", **config_text1)
                 texto_dias.place(x=20, y=80)
 
                 # Descrição
-                texto_descricao = tk.Label(JGC, text="Descrição:", **config_text)
-                texto_descricao.place(x=250, y=110)
+                texto_descricao = tk.Label(JGC, text="Descrição do Curso:", **config_text1)
+                texto_descricao.place(x=200, y=110)
 
-                texto_descricao = tk.Label(JGC, text=f"{descricao}", **config_text)
+                texto_descricao = tk.Label(JGC, text=f"{descricao}", **config_text1)
                 texto_descricao.place(x=20, y=140)
 
             cursor.close()

@@ -67,6 +67,9 @@ def LoginUsuario():
                     menu_adm.iniciar(usuario)
                 elif tipo_usuario == "aluno":
                     abrirPaginaAluno()
+                elif tipo_usuario == "professor":
+                    from interface.login.pagina_prof import menu_prof
+                    menu_prof.iniciar(usuario)
                 else:
                     messagebox.showerror("Erro", "Tipo de usuário desconhecido.")
             else:
