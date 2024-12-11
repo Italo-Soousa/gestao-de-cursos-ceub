@@ -21,8 +21,7 @@ carga_horaria: Duração do curso em horas.
 descricao: Descrição detalhada do curso.
 vagas: Número de vagas disponíveis.
 
-2. Tabela perfis
-Armazena os dados dos usuários do sistema. Cada usuário pode ser um aluno ou administrador. Esta tabela inclui o id_perfis, nome, login, senha, email, tipo_usuario.
+2. Tabela perfis: armazena os dados dos usuários do sistema. Cada usuário pode ser um aluno ou administrador. Esta tabela inclui o id_perfis, nome, login, senha, email, tipo_usuario.
 
 Exemplo de criação da tabela perfis:
 CREATE TABLE `perfis` (
@@ -45,8 +44,7 @@ senha: Senha utilizada para fazer o login.
 email: Email utilizado para fazer o login.
 tipo_usuario: Tipo do usuário (aluno ou administrador)
 
-3. Tabela inscricoes
-Armazena as inscrições dos alunos nos cursos. Cada inscrição está associada a um aluno, a um curso, a data de inscrição no curso, a nota final do aluno e sua presença.
+3. Tabela inscricoes: armazena as inscrições dos alunos nos cursos. Cada inscrição está associada a um aluno, a um curso, a data de inscrição no curso, a nota final do aluno e sua presença.
 
 Exemplo de criação da tabela inscricoes:
 CREATE TABLE `inscricoes` (
