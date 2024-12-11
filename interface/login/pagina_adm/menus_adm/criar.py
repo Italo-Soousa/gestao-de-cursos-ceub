@@ -5,31 +5,31 @@ from util.config import cor0, config_botao, config_text_box, config_text1
 
 
 def Criar():
-    JGC = tk.Tk()
-    JGC.title("Criar Curso")
-    JGC.geometry("600x310")
-    JGC.configure(bg=cor0)
-    JGC.resizable(False, False)
+    JCC = tk.Tk()
+    JCC.title("Criar Curso")
+    JCC.geometry("600x310")
+    JCC.configure(bg=cor0)
+    JCC.resizable(False, False)
 
-    texto_nome = tk.Label(JGC, text=f"Nome Do Curso: ", **config_text1)
+    texto_nome = tk.Label(JCC, text=f"Nome Do Curso: ", **config_text1)
     texto_nome.place(x=20, y=20)
-    nome_entry = tk.Entry(JGC, **config_text_box, width=20)
+    nome_entry = tk.Entry(JCC, **config_text_box, width=20)
     nome_entry.place(x=20, y=50)
 
-    texto_vagas = tk.Label(JGC, text="Vagas Do Curso:", **config_text1)
+    texto_vagas = tk.Label(JCC, text="Vagas Do Curso:", **config_text1)
     texto_vagas.place(x=20, y=80)
-    vaga_entry = tk.Entry(JGC, **config_text_box, width=20)
+    vaga_entry = tk.Entry(JCC, **config_text_box, width=20)
     vaga_entry.place(x=20, y=110)
 
-    texto_carga_horaria = tk.Label(JGC, text="Carga Horaria Do Curso:", **config_text1)
+    texto_carga_horaria = tk.Label(JCC, text="Carga Horaria Do Curso:", **config_text1)
     texto_carga_horaria.place(x=20, y=140)
-    carga_entry = tk.Entry(JGC, **config_text_box, width=20)
+    carga_entry = tk.Entry(JCC, **config_text_box, width=20)
     carga_entry.place(x=20, y=170)
 
-    texto_descricao = tk.Label(JGC, text="Descrição Do Curso:", **config_text1)
+    texto_descricao = tk.Label(JCC, text="Descrição Do Curso:", **config_text1)
     texto_descricao.place(x=200, y=200)
 
-    descricao_entry = tk.Entry(JGC, **config_text_box, width=62)
+    descricao_entry = tk.Entry(JCC, **config_text_box, width=62)
     descricao_entry.place(x=20, y=230)
 
     def salvarDados():
@@ -60,12 +60,12 @@ def Criar():
                 conexao.close()
 
                 # Fecha a janela de registro
-                JGC.destroy()
+                JCC.destroy()
             else:
                 messagebox.showerror("Erro", "Não foi possível conectar ao banco de dados.")
         except Exception as e:
             messagebox.showerror("Erro", f"Ocorreu um erro ao salvar: {e}")
 
-    bntDeRegistro = tk.Button(JGC, text="Criar", **config_botao, command=salvarDados)
+    bntDeRegistro = tk.Button(JCC, text="Criar", **config_botao, command=salvarDados)
     bntDeRegistro.place(x=475, y=260)
-    JGC.mainloop()
+    JCC.mainloop()

@@ -116,59 +116,59 @@ def j_editar_perfil(perfil):
 
 
 # tela de login
-def sair(jgc):
-    jgc.quit()
-    jgc.destroy()
+def sair(JDA):
+    JDA.quit()
+    JDA.destroy()
     from interface.login.paginaLogin import LoginUsuario
     LoginUsuario()
 
 
 def iniciar(perfil):
-    JGC: Tk = tk.Tk()
-    JGC.title("Gestão de Cursos UNI-CEUB")
-    JGC.geometry("600x350")
-    JGC.configure(bg=cor0)
-    JGC.resizable(False, False)
+    JDA: Tk = tk.Tk()
+    JDA.title("Gestão de Cursos UNI-CEUB")
+    JDA.geometry("600x350")
+    JDA.configure(bg=cor0)
+    JDA.resizable(False, False)
     global x
-    x = JGC
+    x = JDA
     # Imagem CEUB
     diretorio_atual = os.path.dirname(__file__)
     caminho_imagem = os.path.join(diretorio_atual, "..", "..", "imagens", "uniceub.png")
     logo_img = PhotoImage(file=caminho_imagem)
 
-    logo_label = tk.Label(JGC, image=logo_img, bd=0, relief="solid")
+    logo_label = tk.Label(JDA, image=logo_img, bd=0, relief="solid")
     logo_label.place(x=10, y=0)
 
     # local dos botoes de menu
-    menu = tk.Canvas(JGC, width=110, height=300, bg=cor0, bd=0, highlightthickness=0)
+    menu = tk.Canvas(JDA, width=110, height=300, bg=cor0, bd=0, highlightthickness=0)
     menu.place(x=17, y=45)
 
     # local dos botoes de curso
-    canvas = tk.Canvas(JGC, width=445, height=265, bg=cor3, bd=0, highlightthickness=1, highlightbackground="black")
+    canvas = tk.Canvas(JDA, width=445, height=265, bg=cor3, bd=0, highlightthickness=1, highlightbackground="black")
     canvas.place(x=145, y=75)
 
     # Adicionando o evento de rolagem no local dos cursos
     canvas.bind_all("<MouseWheel>", lambda event: rolar_canvas(event, canvas))
 
     # botoes do menu
-    botao_Info = tk.Button(JGC, text="Info", **config_botao, command=lambda: info_curso())
+    botao_Info = tk.Button(JDA, text="Info", **config_botao, command=lambda: info_curso())
     menu.create_window(55, 54, window=botao_Info)
 
-    botao_Criar = tk.Button(JGC, text="Criar Curso", **config_botao, command=j_criar)
+    botao_Criar = tk.Button(JDA, text="Criar Curso", **config_botao, command=j_criar)
     menu.create_window(55, 110, window=botao_Criar)
 
-    botao_Editar = tk.Button(JGC, text="Editar Curso", **config_botao, command=lambda: j_editar())
+    botao_Editar = tk.Button(JDA, text="Editar Curso", **config_botao, command=lambda: j_editar())
     menu.create_window(55, 164, window=botao_Editar)
 
-    botao_Editar_perfil = tk.Button(JGC, text="Editar perfil", **config_botao, command=lambda: j_editar_perfil(perfil))
+    botao_Editar_perfil = tk.Button(JDA, text="Editar perfil", **config_botao, command=lambda: j_editar_perfil(perfil))
     menu.create_window(55, 220, window=botao_Editar_perfil)
 
-    botao_Sair = tk.Button(JGC, text="Sair", **config_botao, command=lambda: sair(JGC))
+    botao_Sair = tk.Button(JDA, text="Sair", **config_botao, command=lambda: sair(JDA))
     menu.create_window(55, 274, window=botao_Sair)
 
     # Caixa de pesquisa
     pesquisa_var = tk.StringVar()
-    pesquisa = tk.Entry(JGC, textvariable=pesquisa_var, **config_text_box, width=49)
+    pesquisa = tk.Entry(JDA, textvariable=pesquisa_var, **config_text_box, width=49)
     pesquisa.place(x=145, y=15)
 
     # Monitorar a barra de pesquisa e atualizar os botões quando o usuário digitar
@@ -176,4 +176,4 @@ def iniciar(perfil):
 
     # Gerar os botões para os cursos
     gerar_botoes(canvas)
-    JGC.mainloop()
+    JDA.mainloop()

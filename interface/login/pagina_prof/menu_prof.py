@@ -138,7 +138,7 @@ def iniciar(perfil):
     global Perfil
     Perfil = perfil
     x = JMP
-    # Imagem CEUB (na parte esquerda do grid)
+    # Imagem CEUB
     diretorio_atual = os.path.dirname(__file__)
     caminho_imagem = os.path.join(diretorio_atual, "..", "..", "imagens", "uniceub.png")
     logo_img = PhotoImage(file=caminho_imagem)

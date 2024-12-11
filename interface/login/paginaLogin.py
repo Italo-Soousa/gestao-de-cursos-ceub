@@ -1,8 +1,11 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox, simpledialog, PhotoImage
 from interface.login.pagina_adm import menu_adm
 from paginaRegistro import abrirPaginaRegistro
 from util.db import conexaoBanco  # Importa a função de conexão
+from util.config import cor0, config_botao, config_text1, config_text_box
+import os
+
 def LoginUsuario():
     # Função para validar a senha antes de acessar a página de registro
     def solicitarSenha():
@@ -18,20 +21,29 @@ def LoginUsuario():
     # Configuração da janela principal
     janela = tk.Tk()
     janela.title('Login Usuário')
-    janela.geometry('300x240')
+    janela.geometry('280x300')
+    janela.configure(bg=cor0)
     janela.resizable(False, False)
 
+    # Imagem CEUB
+    diretorio_atual = os.path.dirname(__file__)
+    caminho_imagem = os.path.join(diretorio_atual, "..", "imagens", "uniceub.png")
+    logo_img = PhotoImage(file=caminho_imagem)
+
+    logo_label = tk.Label(janela, image=logo_img, bd=0, relief="solid")
+    logo_label.place(x=95, y=0)
+
     # Label "Login"
-    label_login = tk.Label(janela, text="LOGIN", font=("Arial", 10, "bold"))
-    label_login.pack(pady=(10, 5))  # Espaçamento acima do campo
-    term1 = tk.Entry(janela, width=25, justify="center", font=("Arial", 12))
-    term1.pack(pady=(0, 15))  # Espaçamento abaixo do campo
+    label_login = tk.Label(janela, text="LOGIN",**config_text1)
+    label_login.place(x=105, y=70)  # Posiciona a label "LOGIN"
+    term1 = tk.Entry(janela, width=25,**config_text_box)
+    term1.place(x=25, y=105)  # Posiciona o campo de entrada do login
 
     # Label "Senha"
-    label_senha = tk.Label(janela, text="SENHA", font=("Arial", 10, "bold"))
-    label_senha.pack(pady=(10, 5))  # Espaçamento acima do campo
-    term2 = tk.Entry(janela, width=25, justify="center", font=("Arial", 12), show="*")
-    term2.pack(pady=(0, 20))  # Espaçamento abaixo do campo
+    label_senha = tk.Label(janela, text="SENHA",**config_text1)
+    label_senha.place(x=105, y=145)  # Posiciona a label "SENHA"
+    term2 = tk.Entry(janela, width=25,**config_text_box)
+    term2.place(x=25, y=180)  # Posiciona o campo de entrada da senha
 
     def abrirPaginaAluno():
         aluno_window = tk.Tk()
@@ -81,17 +93,13 @@ def LoginUsuario():
             cursor.close()
             conexao.close()
 
-    # Frame para os botões
-    button_frame = tk.Frame(janela)
-    button_frame.pack(pady=(10, 0))  # Espaçamento acima do frame dos botões
-
-    # Botão de Login
-    btn_login = tk.Button(button_frame, text="Entrar", width=12, font=("Arial", 10, "bold"), command=loginUsuario)
-    btn_login.pack(side="left", padx=5)  # Espaçamento lateral
+    # Botões
+    btn_login = tk.Button(janela, text="Entrar",**config_botao, command=loginUsuario)
+    btn_login.place(x=15, y=240)  # Posiciona o botão de login
 
     # Botão de Registro com validação de senha
-    btn_registro = tk.Button(button_frame, text="Registrar", width=12, font=("Arial", 10, "bold"), command=solicitarSenha)
-    btn_registro.pack(side="left", padx=5)  # Espaçamento lateral
+    btn_registro = tk.Button(janela, text="Registrar",**config_botao, command=solicitarSenha)
+    btn_registro.place(x=160, y=240)  # Posiciona o botão de registro
 
     # Executar o loop principal da janela
     janela.mainloop()
