@@ -2,7 +2,7 @@
 
 curso_selecionado = ""
 cor0 = '#ffffff'
-cor1 = '#2491ff'
+cor1 = '#42044D'
 texto = '#DCDCDC'
 texto1 = '#121212'
 cor3 = '#ffffff'

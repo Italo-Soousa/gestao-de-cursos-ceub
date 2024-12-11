@@ -8,7 +8,7 @@ from interface.login import editar_perfil
 
 # variaveis
 texto_informativo = None
-
+curso_selecionado = None
 
 # memoriza o curso selecionado
 def salvar_curso(nome):
