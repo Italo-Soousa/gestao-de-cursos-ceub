@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk, PhotoImage, messagebox
 from util.db import conexaoBanco  # Certifique-se de ter a classe SQL configurada
 from paginaDadosUsuario import abrir_dados_usuario
-from Compartilhado import inscricoes
 from paginaCurso import abrir_pagina_curso
 import os
 
@@ -23,7 +22,7 @@ def abrir_pagina_meus_cursos():
             cursor = conn.cursor()
 
             # Consulta ao banco de dados
-            cursor.execute("SELECT nome, carga_horaria, vagas, descricao FROM curso WHERE id_curso = %s", (curso_id,))
+            cursor.execute("SELECT nome, carga_horaria, vagas, descricao FROM cursos WHERE id_curso = %s", (curso_id,))
             resultado = cursor.fetchone()
             conn.close()
 
@@ -135,7 +134,7 @@ def abrir_pagina_meus_cursos():
             cursor.execute("""
                 SELECT c.id_curso, c.nome, c.carga_horaria, c.vagas
                 FROM inscricoes i
-                JOIN curso c ON i.id_curso = c.id_curso
+                JOIN cursos c ON i.id_curso = c.id_curso
                 WHERE i.id_perfis = %s
             """, (id_perfis,))
 
@@ -232,10 +231,6 @@ def abrir_pagina_meus_cursos():
         tree.column("Carga_horaria", width=80)
         tree.column("Disponivel", width=100)
         tree.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
-
-        # Atualizar o Treeview com os cursos inscritos
-        for curso in inscricoes:
-            tree.insert("", "end", values=curso)
 
         # Botões de operação
         bt_abrir = tk.Button(parent, text="Abrir", command=lambda: abrir_curso(tree))

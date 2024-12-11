@@ -4,7 +4,6 @@ from util.db import conexaoBanco
 from paginaDadosUsuario import abrir_dados_usuario
 from paginaCurso import abrir_pagina_curso
 from paginaMeusCursos import abrir_pagina_meus_cursos
-from Compartilhado import inscricoes
 import os
 
 def inscrever_curso(tree, id_perfis):
@@ -85,7 +84,7 @@ def consultar_dados(tree):
         cursor = conn.cursor()
 
         # Executar a consulta SQL (adicionando o campo de vagas)
-        cursor.execute("SELECT id_curso, nome, carga_horaria, vagas FROM curso")
+        cursor.execute("SELECT id_curso, nome, carga_horaria, vagas FROM cursos")
 
         # Limpar o Treeview antes de inserir novos dados
         for item in tree.get_children():
