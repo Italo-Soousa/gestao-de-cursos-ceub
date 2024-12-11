@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DatabaseToolDbSqlDialect">
+    <option name="dialects">
+      <map>
+        <entry key="$APPLICATION_CONFIG_DIR$/consoles/database-tool/c83650ac-c6ac-44e2-b0b3-0cf50121daf6/console.sql" value="MySQL" />
+      </map>
+    </option>
+  </component>
+</project>

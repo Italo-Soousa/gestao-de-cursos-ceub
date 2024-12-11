@@ -5,9 +5,21 @@ from paginaDadosUsuario import abrir_dados_usuario
 from paginaMeusCursos import abrir_pagina_meus_cursos
 import os
 
+
+def abrir_pagina_descobrir(root):
+    """
+    Função para abrir a página Descobrir como uma nova janela.
+    """
+    # Fechar a página atual (opcional)
+    # root.destroy()
+
+    # Abrir a página Descobrir
+    from paginaDescobrir import abrir_pagina_descobrir
+    abrir_pagina_descobrir()
+
 # Janela principal
 root = tk.Tk()
-root.title("Gestão de Cursos")
+root.title("Home")
 root.geometry("700x400")
 root.resizable(False, False)
 
@@ -49,7 +61,7 @@ separator.pack(fill="x", pady=10, padx=10)  # Linha separadora
 btn_meus_cursos = tk.Button(sidebar, text="Meus Cursos", font=("Arial", 10, "bold"), relief="flat", command=lambda: abrir_pagina_meus_cursos())
 btn_meus_cursos.pack(pady=10, padx=10, fill="x")
 
-btn_descobrir = tk.Button(sidebar, text="Descobrir", font=("Arial", 10, "bold"), relief="flat", bg="lightblue", fg="White")
+btn_descobrir = tk.Button(sidebar, text="Descobrir", font=("Arial", 10, "bold"), relief="flat", bg="lightblue", fg="White", command=lambda: abrir_pagina_descobrir(root))
 btn_descobrir.pack(pady=10, padx=10, fill="x")
 
 separator = tk.Frame(sidebar, height=2, bg="white")

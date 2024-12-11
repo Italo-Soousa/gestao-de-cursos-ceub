@@ -7,6 +7,17 @@ import os
 
 def abrir_pagina_meus_cursos():
 
+    def abrir_pagina_descobrir(root):
+        """
+        Função para abrir a página Descobrir como uma nova janela.
+        """
+        # Fechar a página atual (opcional)
+        # root.destroy()
+
+        # Abrir a página Descobrir
+        from paginaDescobrir import abrir_pagina_descobrir
+        abrir_pagina_descobrir()
+
     def buscar_detalhes_curso(curso_id):
         """
         Busca os detalhes do curso no banco de dados com base no ID.
@@ -109,7 +120,15 @@ def abrir_pagina_meus_cursos():
     btn_meus_cursos.pack(pady=10, padx=10, fill="x")
 
     # Botão de descobrir
-    btn_descobrir = tk.Button(sidebar, text="Descobrir", font=("Arial", 10, "bold"), relief="flat")
+    btn_descobrir = tk.Button(
+        sidebar,
+        text="Descobrir",
+        font=("Arial", 10, "bold"),
+        relief="flat",
+        bg="lightblue",
+        fg="White",
+        command=lambda: abrir_pagina_descobrir(root)
+    )
     btn_descobrir.pack(pady=10, padx=10, fill="x")
 
     # Linha que divide os botões
