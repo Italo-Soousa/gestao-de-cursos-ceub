@@ -23,12 +23,13 @@ def Editar(nome):
         if conexao:
             cursor = conexao.cursor()
 
-            cursor.execute("SELECT vagas, carga_horaria, descricao FROM cursos WHERE nome = %s", (nome,))
+            cursor.execute("SELECT vagas, carga_horaria, descricao,id_curso FROM cursos WHERE nome = %s", (nome,))
             resultado = cursor.fetchone()
 
             if resultado:
-                vag, carga_horaria, desc = resultado
-
+                vag, carga_horaria, desc,id_c= resultado
+                global id_curso
+                id_curso = id_c
                 texto_informativo = tk.Label(JEC, text=f"Nome Do Curso: {nome}", **config_text1)
                 texto_informativo.place(x=20, y=20)
                 texto_vagas = tk.Label(JEC, text=f"Vagas Do Curso: {vag}", **config_text1)
@@ -119,9 +120,8 @@ def Editar(nome):
             conexao = conexaoBanco()
             if conexao:
                 cursor = conexao.cursor()
-
+                cursor.execute("DELETE FROM inscricoes WHERE id_curso = %s", (id_curso,))
                 cursor.execute("DELETE FROM cursos WHERE nome = %s", (nome,))
-
                 conexao.commit()
 
                 cursor.close()
