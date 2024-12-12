@@ -1,11 +1,11 @@
 import tkinter as tk
-from datetime import datetime
 from tkinter import ttk, PhotoImage, messagebox
 from docx import Document
 from interface.login.pagina_aluno.menus_aluno.DadosUsuario import abrir_dados_usuario
 from interface.login.pagina_aluno.menus_aluno.Descobrir import descobrir
 from interface.login.pagina_aluno.menus_aluno.MeusCursos import meusCursos
 from util.db import conexaoBanco
+from datetime import datetime
 import os
 
 def abrir_curso(tree):
@@ -33,15 +33,22 @@ def abrir_curso(tree):
         detalhes_janela.title(f"Detalhes do Curso: {titulo_curso}")
         detalhes_janela.geometry("400x300")
 
-        # Exibir os detalhes do curso
-        tk.Label(detalhes_janela, text="Detalhes do Curso", font=("Arial", 16, "bold")).pack(pady=10)
-        tk.Label(detalhes_janela, text=f"Título: {titulo_curso}", font=("Arial", 12)).pack(pady=5)
-        tk.Label(detalhes_janela, text=f"Nota: {nota}", font=("Arial", 12)).pack(pady=5)
-        tk.Label(detalhes_janela, text=f"Presença: {presenca}%", font=("Arial", 12)).pack(pady=5)
-        tk.Label(detalhes_janela, text=f"Certificado: {certificado}", font=("Arial", 12)).pack(pady=5)
+        # Exibir o título centralizado
+        tk.Label(detalhes_janela, text="Detalhes do Curso", font=("Arial", 20, "bold")).pack(pady=10, anchor="center")
 
-        # Botão para fechar a janela de detalhes
-        tk.Button(detalhes_janela, text="Fechar", command=detalhes_janela.destroy).pack(pady=20)
+        # Criar um frame para os detalhes e alinhar com margem na esquerda
+        frame_detalhes = tk.Frame(detalhes_janela)
+        frame_detalhes.pack(fill="both", expand=True, padx=20, pady=5)
+
+        # Exibir os detalhes do curso com margem à esquerda
+        tk.Label(frame_detalhes, text=f"Título: {titulo_curso}", font=("Arial", 14), anchor="w").pack(pady=5, fill="x")
+        tk.Label(frame_detalhes, text=f"Nota: {nota}", font=("Arial", 14), anchor="w").pack(pady=5, fill="x")
+        tk.Label(frame_detalhes, text=f"Presença: {presenca}%", font=("Arial", 14), anchor="w").pack(pady=5, fill="x")
+        tk.Label(frame_detalhes, text=f"Certificado: {certificado}", font=("Arial", 14), anchor="w").pack(pady=5,
+                                                                                                          fill="x")
+
+        # Botão para fechar a janela, alinhado ao centro
+        tk.Button(detalhes_janela, text="Fechar", font=("Arial", 14), command=detalhes_janela.destroy).pack(pady=20)
 
     except Exception as e:
         messagebox.showerror("Erro ao Abrir Curso", f"Ocorreu um erro ao tentar abrir os detalhes do curso.\n\n{e}")
@@ -82,7 +89,7 @@ def abrir_curso(tree):
 
 def emitir_certificado(tree, perfil):
     """
-    Gera um certificado do curso selecionado no TreeView.
+    Gera um certificado do curso selecionado no TreeView e o salva na pasta 'certificados'.
     """
     try:
         # Obter o item selecionado no TreeView
@@ -105,6 +112,11 @@ def emitir_certificado(tree, perfil):
             messagebox.showerror("Certificado Indisponível", "Você não atingiu os requisitos para obter o certificado.")
             return
 
+        # Diretório de saída para os certificados
+        diretorio_certificados = os.path.join(os.getcwd(), "certificados")
+        if not os.path.exists(diretorio_certificados):
+            os.makedirs(diretorio_certificados)  # Criar a pasta se ela não existir
+
         # Criar o documento do Word
         doc = Document()
         doc.add_heading('Certificado de Conclusão', level=1)
@@ -117,11 +129,14 @@ def emitir_certificado(tree, perfil):
             "Este certificado foi gerado automaticamente e é válido somente para fins acadêmicos."
         )
 
-        # Salvar o arquivo
-        arquivo = f"Certificado_{titulo_curso.replace(' ', '_')}.docx"
-        doc.save(arquivo)
+        # Salvar o arquivo na pasta 'certificados'
+        arquivo_certificado = os.path.join(
+            diretorio_certificados,
+            f"Certificado_{titulo_curso.replace(' ', '_')}.docx"
+        )
+        doc.save(arquivo_certificado)
 
-        messagebox.showinfo("Certificado Emitido", f"Certificado emitido com sucesso: {arquivo}")
+        messagebox.showinfo("Certificado Emitido", f"Certificado emitido com sucesso: {arquivo_certificado}")
 
     except Exception as e:
         messagebox.showerror("Erro ao Emitir Certificado", f"Ocorreu um erro ao tentar emitir o certificado.\n\n{e}")

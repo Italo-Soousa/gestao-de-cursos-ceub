@@ -9,7 +9,7 @@ def meusCursos(perfil):
 
     def desinscrever_curso(tree, login_usuario):
         """
-        Remove a inscrição do curso selecionado no Treeview para o usuário logado.
+        Remove a inscrição do curso selecionado no Treeview para o usuário logado e adiciona uma vaga ao curso.
         """
         try:
             # Obter o item selecionado no Treeview
@@ -50,12 +50,23 @@ def meusCursos(perfil):
                 WHERE id_perfis = %s AND id_curso = %s
             """
             cursor.execute(query_delete, (id_perfil, identificador))
-            conn.commit()
 
             # Verificar se a inscrição foi realmente removida
             if cursor.rowcount == 0:
                 messagebox.showerror("Erro", "Não foi possível desinscrever-se do curso.")
             else:
+                # Atualizar as vagas do curso
+                query_update_vagas = """
+                    UPDATE cursos
+                    SET vagas = vagas + 1
+                    WHERE id_curso = %s
+                """
+                cursor.execute(query_update_vagas, (identificador,))
+
+                # Confirmar as alterações no banco de dados
+                conn.commit()
+
+                # Mensagem de sucesso
                 messagebox.showinfo("Sucesso", f"Você se desinscreveu do curso com ID {identificador}.")
                 # Remover o curso do Treeview
                 tree.delete(selected_item)
@@ -133,17 +144,27 @@ def meusCursos(perfil):
             detalhes_janela.title(f"Detalhes do Curso: {titulo}")
             detalhes_janela.geometry("400x400")
 
-            # Exibir os detalhes do curso
-            tk.Label(detalhes_janela, text="Detalhes do Curso", font=("Arial", 16, "bold")).pack(pady=10)
-            tk.Label(detalhes_janela, text=f"Título: {titulo}", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Carga Horária: {carga_horaria} horas", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Descrição: {descricao}", font=("Arial", 12), wraplength=350,
-                     justify="left").pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Nota: {nota}", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Presença: {presenca} horas", font=("Arial", 12)).pack(pady=5)
+            # Exibir o título centralizado
+            tk.Label(detalhes_janela, text="Detalhes do Curso", font=("Arial", 20, "bold")).pack(pady=10,
+                                                                                                 anchor="center")
 
-            # Botão para fechar a janela de detalhes
-            tk.Button(detalhes_janela, text="Fechar", command=detalhes_janela.destroy).pack(pady=20)
+            # Criar um frame para os detalhes e alinhar com margem na esquerda
+            frame_detalhes = tk.Frame(detalhes_janela)
+            frame_detalhes.pack(fill="both", expand=True, padx=20, pady=5)
+
+            # Exibir os detalhes do curso com margem à esquerda
+            tk.Label(frame_detalhes, text=f"Título: {titulo}", font=("Arial", 14), anchor="w").pack(pady=5, fill="x")
+            tk.Label(frame_detalhes, text=f"Carga Horária: {carga_horaria} horas", font=("Arial", 14), anchor="w").pack(
+                pady=5, fill="x")
+            tk.Label(frame_detalhes, text=f"Nota: {nota}", font=("Arial", 14), anchor="w").pack(pady=5, fill="x")
+            tk.Label(frame_detalhes, text=f"Presença: {presenca} horas", font=("Arial", 14), anchor="w").pack(pady=5,
+                                                                                                              fill="x")
+            tk.Label(frame_detalhes, text="Descrição:", font=("Arial", 14, "bold"), anchor="w").pack(pady=5, fill="x")
+            tk.Label(frame_detalhes, text=descricao, font=("Arial", 14), wraplength=350, justify="left").pack(pady=5,
+                                                                                                              fill="x")
+
+            # Botão para fechar a janela, alinhado ao centro
+            tk.Button(detalhes_janela, text="Fechar", font=("Arial", 14), command=detalhes_janela.destroy).pack(pady=20)
 
         except Exception as e:
             messagebox.showerror("Erro ao Abrir Curso", f"Ocorreu um erro ao tentar abrir os detalhes do curso.\n\n{e}")
@@ -242,10 +263,6 @@ def meusCursos(perfil):
     btn_meus_cursos = tk.Button(sidebar, text="Meus Cursos", font=("Arial", 10, "bold"), relief="flat", bg="lightblue", fg="White")
     btn_meus_cursos.pack(pady=10, padx=10, fill="x")
 
-    # Botão de descobrir
-    btn_descobrir = tk.Button(sidebar,text="Descobrir",font=("Arial", 10, "bold"),relief="flat")
-    btn_descobrir.pack(pady=10, padx=10, fill="x")
-
     # Linha que divide os botões
     separator = tk.Frame(sidebar, height=2, bg="white")
     separator.pack(fill="x", pady=10, padx=10)  # Adiciona margens laterais de 20px
@@ -258,12 +275,8 @@ def meusCursos(perfil):
 
     def criar_treeview(parent):
         # Campo de consulta
-        lb_nome = tk.Label(parent, text="Pesquise o seu curso:", font='Arial 12')
+        lb_nome = tk.Label(parent, text='Clique em "Consultar" para vizualizar os cursos em que você está inscrito:', font='Arial 12')
         lb_nome.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-
-        nome_var = tk.StringVar()
-        et_nome = ttk.Entry(parent, width=30, textvariable=nome_var, font='Arial 12')
-        et_nome.grid(row=0, column=1, pady=10)
 
         bt_consultar = tk.Button(parent, text="Consultar", command=lambda: consultar_cursos_inscritos(tree, perfil))
         bt_consultar.grid(row=0, column=2, padx=10, pady=10)

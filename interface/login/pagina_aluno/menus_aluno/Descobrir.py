@@ -50,17 +50,29 @@ def descobrir(perfil):
             detalhes_janela.title(f"Detalhes do Curso: {titulo_curso}")
             detalhes_janela.geometry("400x400")
 
-            # Exibir os detalhes do curso
-            tk.Label(detalhes_janela, text="Detalhes do Curso", font=("Arial", 16, "bold")).pack(pady=10)
-            tk.Label(detalhes_janela, text=f"Identificador: {identificador}", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Título: {titulo_curso}", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Carga Horária: {carga_horaria} horas", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text=f"Disponibilidade: {disponibilidade}", font=("Arial", 12)).pack(pady=5)
-            tk.Label(detalhes_janela, text="Descrição:", font=("Arial", 12, "bold")).pack(pady=5)
-            tk.Label(detalhes_janela, text=descricao, font=("Arial", 12), wraplength=350, justify="left").pack(pady=5)
+            # Exibir o título centralizado
+            tk.Label(detalhes_janela, text="Detalhes do Curso", font=("Arial", 20, "bold")).pack(pady=10,
+                                                                                                 anchor="center")
 
-            # Botão para fechar a janela de detalhes
-            tk.Button(detalhes_janela, text="Fechar", command=detalhes_janela.destroy).pack(pady=10)
+            # Criar um frame para os detalhes e alinhar com margem na esquerda
+            frame_detalhes = tk.Frame(detalhes_janela)
+            frame_detalhes.pack(fill="both", expand=True, padx=20, pady=5)
+
+            # Exibir os detalhes do curso com margem à esquerda
+            tk.Label(frame_detalhes, text=f"Identificador: {identificador}", font=("Arial", 14, "bold"),
+                     anchor="w").pack(pady=5, fill="x")
+            tk.Label(frame_detalhes, text=f"Título: {titulo_curso}", font=("Arial", 14), anchor="w").pack(pady=5,
+                                                                                                          fill="x")
+            tk.Label(frame_detalhes, text=f"Carga Horária: {carga_horaria} horas", font=("Arial", 14), anchor="w").pack(
+                pady=5, fill="x")
+            tk.Label(frame_detalhes, text=f"Disponibilidade: {disponibilidade}", font=("Arial", 14), anchor="w").pack(
+                pady=5, fill="x")
+            tk.Label(frame_detalhes, text="Descrição:", font=("Arial", 14, "bold"), anchor="w").pack(pady=5, fill="x")
+            tk.Label(frame_detalhes, text=descricao, font=("Arial", 14), wraplength=350, justify="left",
+                     anchor="w").pack(pady=5, fill="x")
+
+            # Botão para fechar a janela, alinhado ao centro
+            tk.Button(detalhes_janela, text="Fechar", font=("Arial", 14), command=detalhes_janela.destroy).pack(pady=20)
 
         except Exception as e:
             messagebox.showerror("Erro ao Abrir Curso", f"Ocorreu um erro ao tentar abrir os detalhes do curso.\n\n{e}")
@@ -92,7 +104,7 @@ def descobrir(perfil):
 
     def inscrever_curso(tree, login_usuario):
         """
-        Inscreve o curso selecionado no banco de dados usando o login do usuário.
+        Inscreve o curso selecionado no banco de dados usando o login do usuário e reduz as vagas disponíveis.
         """
         try:
             # Obter o item selecionado
@@ -105,6 +117,10 @@ def descobrir(perfil):
             # Extrair os valores do curso selecionado
             valores = tree.item(item_selecionado, 'values')
             curso_id, titulo, carga_horaria, disponibilidade = valores
+
+            if disponibilidade != "Disponível":
+                messagebox.showerror("Curso Indisponível", "Este curso não possui vagas disponíveis.")
+                return
 
             # Conectar ao banco de dados
             conn = conexaoBanco()
@@ -134,7 +150,19 @@ def descobrir(perfil):
                 """,
                 (curso_id, login_usuario)
             )
-            conn.commit()  # Confirmar a transação
+
+            # Atualizar as vagas do curso
+            cursor.execute(
+                """
+                UPDATE cursos
+                SET vagas = vagas - 1
+                WHERE id_curso = %s AND vagas > 0
+                """,
+                (curso_id,)
+            )
+
+            # Confirmar as transações
+            conn.commit()
 
             # Mensagem de sucesso
             messagebox.showinfo("Inscrição Realizada", f"Você se inscreveu no curso: {titulo}")
@@ -143,12 +171,12 @@ def descobrir(perfil):
             cursor.close()
             conn.close()
 
+            # Atualizar os dados exibidos no Treeview
+            consultar_dados(tree)
+
         except Exception as e:
             messagebox.showerror("Erro ao Inscrever", f"Ocorreu um erro ao se inscrever no curso.\n\n{e}")
 
-    """
-    Função para abrir a página Descobrir.
-    """
     # Janela principal
     root = tk.Tk()
     root.title("Descobrir")
@@ -187,9 +215,6 @@ def descobrir(perfil):
     separator = tk.Frame(sidebar, height=2, bg="white")
     separator.pack(fill="x", pady=10, padx=10)  # Linha separadora
 
-    btn_meus_cursos = tk.Button(sidebar, text="Meus Cursos", font=("Arial", 10, "bold"), relief="flat", command=lambda: meusCursos(perfil))
-    btn_meus_cursos.pack(pady=10, padx=10, fill="x")
-
     btn_descobrir = tk.Button(sidebar, text="Descobrir", font=("Arial", 10, "bold"), relief="flat", bg="lightblue", fg="White")
     btn_descobrir.pack(pady=10, padx=10, fill="x")
 
@@ -202,12 +227,8 @@ def descobrir(perfil):
 
     # ========================== Treeview na Área de Conteúdo ==========================
     def criar_treeview(parent):
-        lb_nome = tk.Label(parent, text="Pesquise o seu curso:", font='Arial 12')
+        lb_nome = tk.Label(parent, text='Clique em "Consultar" para ver os cursos disponíveis:', font='Arial 12')
         lb_nome.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-
-        nome_var = tk.StringVar()
-        et_nome = ttk.Entry(parent, width=30, textvariable=nome_var, font='Arial 12')
-        et_nome.grid(row=0, column=1, pady=10)
 
         bt_consultar = tk.Button(parent, text="Consultar", command=lambda: consultar_dados(tree))
         bt_consultar.grid(row=0, column=2, padx=10, pady=10)
