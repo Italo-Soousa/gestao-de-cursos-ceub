@@ -34,7 +34,7 @@ def Editar(nome):
                 texto_informativo.place(x=20, y=20)
                 texto_vagas = tk.Label(JEC, text=f"Vagas Do Curso: {vag}", **config_text1)
                 texto_vagas.place(x=20, y=50)
-                texto_carga = tk.Label(JEC, text=f"Carga Horaria Do Curso: {carga_horaria}", **config_text1)
+                texto_carga = tk.Label(JEC, text=f"Carga Horaria Do Curso: {carga_horaria} Horas", **config_text1)
                 texto_carga.place(x=20, y=110)
                 texto_Professor = tk.Label(JEC, text="Login do Professor:", **config_text1)
                 texto_Professor.place(x=20, y=170)

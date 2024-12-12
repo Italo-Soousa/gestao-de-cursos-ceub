@@ -32,7 +32,7 @@ def Info(nome):
                 texto_vagas.place(x=20, y=50)
 
                 # Dias
-                texto_dias = tk.Label(JIC, text=f"Carga Horaria do Curso: {carga_horaria}", **config_text1)
+                texto_dias = tk.Label(JIC, text=f"Carga Horaria do Curso: {carga_horaria} Horas", **config_text1)
                 texto_dias.place(x=20, y=80)
 
                 # Descrição

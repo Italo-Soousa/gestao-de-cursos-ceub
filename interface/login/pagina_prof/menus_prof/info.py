@@ -47,7 +47,7 @@ def Info(nome):
                 vagas, carga_horaria, descricao, id_curso = resultado
 
                 texto_informativo = tk.Label(JDI,
-                                             text=f"Cursos: {nome}    |    Vagas: {vagas}    |    Carga Horária: {carga_horaria}",
+                                             text=f"Cursos: {nome}    |    Vagas: {vagas}    |    Carga Horária: {carga_horaria} Horas",
                                              **config_text1)
                 texto_informativo.place(x=10, y=10)
 
