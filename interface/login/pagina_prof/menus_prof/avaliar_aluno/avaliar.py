@@ -1,7 +1,7 @@
 import tkinter as tk
 from util.db import conexaoBanco
 from tkinter import messagebox
-from util.config import cor0, config_botao, config_text_box, config_text
+from util.config import cor0, config_botao, config_text_box, config_text1
 
 
 def avaliar(id_aluno, id_curso, nome):
@@ -30,14 +30,14 @@ def avaliar(id_aluno, id_curso, nome):
                 nota_aluno, presenca_aluno, id_inscricao = resultado
                 print(resultado)
                 # Exibindo o título com o login do curso
-                texto_informativo = tk.Label(JDA, text=f"Nome Do Aluno: {nome}", **config_text)
+                texto_informativo = tk.Label(JDA, text=f"Nome Do Aluno: {nome}", **config_text1)
                 texto_informativo.place(x=20, y=20)
 
                 # senha
-                texto_senha = tk.Label(JDA, text=f"Nota do Aluno: {nota_aluno}", **config_text)
+                texto_senha = tk.Label(JDA, text=f"Nota do Aluno: {nota_aluno}", **config_text1)
                 texto_senha.place(x=20, y=50)
 
-                texto_email = tk.Label(JDA, text=f"Presença do Aluno: {presenca_aluno}", **config_text)
+                texto_email = tk.Label(JDA, text=f"Presença do Aluno: {presenca_aluno}", **config_text1)
                 texto_email.place(x=20, y=110)
 
             cursor.close()
@@ -97,6 +97,6 @@ def avaliar(id_aluno, id_curso, nome):
             messagebox.showerror("Erro", f"Ocorreu um erro ao salvar: {e}")
 
     # Botão para registrar
-    bntDeRegistro = tk.Button(JDA, text="Confirmar", **config_botao, width=12, command=salvarDados)
+    bntDeRegistro = tk.Button(JDA, text="Confirmar", **config_botao, command=salvarDados)
     bntDeRegistro.place(x=475, y=180)
     JDA.mainloop()

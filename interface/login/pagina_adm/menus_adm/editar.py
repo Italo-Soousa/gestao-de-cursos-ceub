@@ -85,30 +85,29 @@ def Editar(nome):
 
                 # Verifica se o login do professor existe
                 if login:
-                    cursor.execute("SELECT id_perfis FROM perfis WHERE login = %s", (login,))
+                    cursor.execute("SELECT id_perfis, tipo_usuario FROM perfis WHERE login = %s", (login,))
                     resultado = cursor.fetchone()
-
                     if not resultado:
                         messagebox.showerror("Erro", "Login de professor inválido.")
                         return
 
-                    id_perfis = resultado[0]
-
-                    # Insere o relacionamento do curso com o professor na tabela inscricoes
-                    cursor.execute(
-                        "INSERT INTO inscricoes (id_curso, id_perfis) VALUES ((SELECT id_curso FROM cursos WHERE nome = %s), %s) ON DUPLICATE KEY UPDATE id_perfis = %s",
-                        (nome, id_perfis, id_perfis)
-                    )
-                    conexao.commit()
-                    messagebox.showinfo("Sucesso", "Dados atualizados e inscrição realizada com sucesso!")
-
+                    id_perfis, tipo_usuario = resultado
+                    if tipo_usuario == "professor":
+                        # Insere o relacionamento do curso com o professor na tabela inscricoes
+                        cursor.execute(
+                            "INSERT INTO inscricoes (id_curso, id_perfis) VALUES ((SELECT id_curso FROM cursos WHERE nome = %s), %s) ON DUPLICATE KEY UPDATE id_perfis = %s",
+                            (nome, id_perfis, id_perfis)
+                        )
+                        conexao.commit()
+                        messagebox.showinfo("Sucesso", "Dados atualizados e inscrição realizada com sucesso!")
+                    else:
+                        messagebox.showerror("Erro", "Esse usuário não é um professor.")
                 else:
                     messagebox.showwarning("Aviso", "Nenhum login de professor fornecido.")
 
                 cursor.close()
                 conexao.close()
 
-                JEC.destroy()
             else:
                 messagebox.showerror("Erro", "Não foi possível conectar ao banco de dados.")
         except Exception as e:
