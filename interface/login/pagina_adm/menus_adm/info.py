@@ -6,7 +6,7 @@ from util.config import cor0, config_text1
 def Info(nome):
     JIC = tk.Tk()
     JIC.title("Janela de Informaçoes do Curso")
-    JIC.geometry("600x170")
+    JIC.geometry("600x190")
     JIC.configure(bg=cor0)
     JIC.resizable(False, False)
 
@@ -39,7 +39,7 @@ def Info(nome):
                 texto_descricao = tk.Label(JIC, text="Descrição do Curso:", **config_text1)
                 texto_descricao.place(x=200, y=110)
 
-                texto_descricao = tk.Label(JIC, text=f"{descricao}", **config_text1)
+                texto_descricao = tk.Label(JIC, text=f"{descricao}", **config_text1,wraplength=580)
                 texto_descricao.place(x=20, y=140)
 
             cursor.close()
