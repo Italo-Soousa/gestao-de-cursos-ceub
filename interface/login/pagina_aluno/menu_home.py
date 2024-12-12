@@ -194,7 +194,7 @@ def iniciar(perfil):
     root = tk.Tk()
     root.title("Home")
     root.geometry("700x400")
-    root.resizable(False, False)
+    root.resizable(True, True)
 
     # Configurando o frame superior para usar grid
     top_frame = tk.Frame(root, height=50)
@@ -217,7 +217,7 @@ def iniciar(perfil):
     titulo.grid(row=0, column=2, padx=20, sticky="ew")  # Expansível horizontalmente
 
     # Botão Nome do usuário (na direita do grid)
-    botao_usuario = tk.Button(top_frame, text="Meus Perfil", font=("Arial", 12), command=lambda: abrir_dados_usuario(perfil))
+    botao_usuario = tk.Button(top_frame, text="Meu Perfil", font=("Arial", 12), command=lambda: abrir_dados_usuario(perfil))
     botao_usuario.grid(row=0, column=4, padx=20, sticky="e")  # Alinhado à direita
 
     # Barra lateral
