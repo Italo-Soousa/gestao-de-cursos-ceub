@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog, PhotoImage
 from interface.login.pagina_adm import menu_adm
+from interface.login.pagina_aluno import menu_home
 from paginaRegistro import abrirPaginaRegistro
 from util.db import conexaoBanco  # Importa a função de conexão
 from util.config import cor0, config_botao, config_text1, config_text_box
@@ -45,11 +46,6 @@ def LoginUsuario():
     term2 = tk.Entry(janela, width=25,**config_text_box)
     term2.place(x=25, y=180)  # Posiciona o campo de entrada da senha
 
-    def abrirPaginaAluno():
-        aluno_window = tk.Tk()
-        aluno_window.title("Página do Aluno")
-        tk.Label(aluno_window, text="Bem-vindo à página do Aluno!").pack()
-        aluno_window.mainloop()
 
     def loginUsuario():
         usuario = term1.get()
@@ -78,7 +74,7 @@ def LoginUsuario():
                 if tipo_usuario == "administrador":
                     menu_adm.iniciar(usuario)
                 elif tipo_usuario == "aluno":
-                    abrirPaginaAluno()
+                    menu_home.iniciar(usuario)
                 elif tipo_usuario == "professor":
                     from interface.login.pagina_prof import menu_prof
                     menu_prof.iniciar(usuario)

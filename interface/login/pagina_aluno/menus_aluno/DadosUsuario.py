@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from util.db import conexaoBanco
 
-def abrir_dados_usuario(user_id):
+def abrir_dados_usuario(perfil):
 
     # Criar a janela principal
     janela_usuario = tk.Toplevel()
@@ -16,7 +16,7 @@ def abrir_dados_usuario(user_id):
         cursor = conexao.cursor()
 
         # Consultar os dados do usuário
-        cursor.execute("SELECT nome, email, login, senha, tipo_usuario FROM perfis WHERE id_perfis = %s", (user_id,))
+        cursor.execute("SELECT nome, email, login, senha, tipo_usuario FROM perfis WHERE login = %s", (perfil,))
         resultado = cursor.fetchone()
 
         if resultado:
